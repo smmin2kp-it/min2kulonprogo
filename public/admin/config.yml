@@ -1,0 +1,117 @@
+# Decap CMS Configuration
+# https://decapcms.org/docs/configuration-options/
+
+backend:
+  name: github
+  branch: main
+  repo: AdityaNugraha1/min2-kulonprogo
+  base_url: https://min2kp.pages.dev
+  auth_endpoint: api/auth
+  disable_cms_authentication: false
+
+# Pakai netlify-style pada Cloudflare Pages (tanpa auth) bila belum pasang function:
+# backend:
+#   name: test-repo
+#   login: false
+
+publish_mode: editorial_workflow
+media_folder: "public/images"
+public_folder: "/images"
+site_url: https://min2kp.pages.dev
+
+collections:
+  - name: "carousel"
+    label: "Banner Utama (Carousel)"
+    folder: "src/content/carousel"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Judul Slide", name: "title", widget: "string" }
+      - { label: "Sub-Judul", name: "subtitle", widget: "string", required: false }
+      - { label: "Badge / Label Atas", name: "badge", widget: "string", required: false }
+      - { label: "Foto Banner", name: "image", widget: "image", default: "/images/qngqw.jpg" }
+      - { label: "Penjelasan Singkat", name: "description", widget: "text" }
+      - { label: "Tombol Utama - Teks", name: "buttonPrimaryText", widget: "string", required: false }
+      - { label: "Tombol Utama - Link", name: "buttonPrimaryLink", widget: "string", required: false }
+      - { label: "Tombol Kedua - Teks", name: "buttonSecondaryText", widget: "string", required: false }
+      - { label: "Tombol Kedua - Link", name: "buttonSecondaryLink", widget: "string", required: false }
+      - { label: "Urutan Slide", name: "order", widget: "number", default: 1 }
+
+  - name: "berita"
+    label: "Berita"
+    folder: "src/content/berita"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Judul", name: "title", widget: "string" }
+      - { label: "Tanggal", name: "date", widget: "datetime" }
+      - { label: "Gambar Sampul", name: "cover", widget: "image", required: false }
+      - { label: "Ringkasan", name: "excerpt", widget: "text", required: false }
+      - { label: "Draft (sembunyikan dari publik)", name: "draft", widget: "boolean", default: false, required: false }
+      - { label: "Isi", name: "body", widget: "markdown" }
+
+  - name: "galeri"
+    label: "Galeri"
+    folder: "src/content/galeri"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Judul Album", name: "title", widget: "string" }
+      - { label: "Tanggal", name: "date", widget: "datetime" }
+      - { label: "Deskripsi", name: "description", widget: "text", required: false }
+      - { label: "Foto", name: "photos", widget: "list", field: { label: "Foto", name: "photo", widget: "image" } }
+
+  - name: "halaman"
+    label: "Halaman"
+    folder: "src/content/halaman"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Judul", name: "title", widget: "string" }
+      - { label: "Urutan", name: "order", widget: "number", default: 0, required: false }
+      - { label: "Isi", name: "body", widget: "markdown" }
+
+  - name: "faq"
+    label: "FAQ"
+    folder: "src/content/faq"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Pertanyaan", name: "question", widget: "string" }
+      - { label: "Urutan", name: "order", widget: "number", default: 0, required: false }
+      - { label: "Jawaban", name: "body", widget: "markdown" }
+
+  - name: "kurikulum"
+    label: "Kurikulum"
+    folder: "src/content/kurikulum"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Judul", name: "title", widget: "string" }
+      - { label: "Bab", name: "bab", widget: "string", required: false }
+      - { label: "Urutan", name: "order", widget: "number", default: 0, required: false }
+      - { label: "Isi", name: "body", widget: "markdown" }
+
+  - name: "keunggulan"
+    label: "Keunggulan"
+    folder: "src/content/keunggulan"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Ikon (Emoji)", name: "icon", widget: "string", required: false }
+      - { label: "Judul", name: "title", widget: "string" }
+      - { label: "Deskripsi", name: "desc", widget: "text" }
+      - { label: "Warna", name: "color", widget: "string", required: false }
+      - { label: "Garis Tepi", name: "border", widget: "string", required: false }
+      - { label: "Label Pendek", name: "badge", widget: "string", required: false }
+      - { label: "Urutan", name: "order", widget: "number", default: 0, required: false }
+
+  - name: "statistik"
+    label: "Statistik"
+    folder: "src/content/statistik"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Angka", name: "value", widget: "string" }
+      - { label: "Label", name: "label", widget: "string" }
+      - { label: "Urutan", name: "order", widget: "number", default: 0, required: false }

@@ -1,0 +1,23 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import PageHeader from '../../components/PageHeader.astro'
+import { getCollection, render } from 'astro:content'
+
+export async function getStaticPaths() {
+  const halaman = await getCollection('halaman')
+  return halaman.map((h) => ({ params: { id: h.id }, props: { halaman: h } }))
+}
+
+const { halaman } = Astro.props
+const { Content } = await render(halaman)
+const title = halaman.data.title
+---
+
+<Layout title={`${title} — MIN 2 Kulon Progo`}>
+  <PageHeader title={title} />
+  <div class="mx-auto max-w-4xl px-4 py-12">
+    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-10 [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-biru-900 [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-slate-800 [&_table]:mt-4 [&_table]:w-full [&_table]:border-collapse [&_table]:text-sm [&_td]:border [&_td]:border-slate-300 [&_td]:px-3 [&_td]:py-2 [&_th]:border [&_th]:border-slate-300 [&_th]:bg-slate-50 [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_ul]:mt-2 [&_ul]:list-disc [&_ol]:mt-2 [&_ol]:list-decimal [&_li]:ml-6 [&_li]:mt-1 [&_p]:mt-2 [&_p]:leading-relaxed [&_p]:text-slate-600">
+      <Content />
+    </div>
+  </div>
+</Layout>

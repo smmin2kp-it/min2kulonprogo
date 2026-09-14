@@ -1,0 +1,97 @@
+---
+// FaqSection.astro — Bagian FAQ / Pertanyaan yang Sering Ditanyakan ala SD Muh Sapen
+import { getCollection, render } from 'astro:content'
+
+const faqEntries = (await getCollection('faq')).sort((a, b) => a.data.order - b.data.order)
+
+const renderedFaqs = await Promise.all(
+  faqEntries.map(async (entry) => {
+    const { Content } = await render(entry)
+    return {
+      question: entry.data.question,
+      Content
+    }
+  })
+)
+---
+
+<section class="my-16 sm:my-24 bg-slate-50 py-16 sm:py-20 border-t border-slate-200/60">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+
+    <div class="text-center mb-12">
+      <span class="inline-block rounded-full bg-hijau-100 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-hijau-800 mb-3">
+        Tanya Jawab
+      </span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-dark-blue">
+        Pertanyaan yang Sering Ditanyakan
+      </h2>
+      <div class="mt-3 h-1.5 w-24 bg-oren mx-auto rounded-full"></div>
+      <p class="mt-4 text-slate-600 text-sm sm:text-base">
+        Berikut adalah beberapa pertanyaan yang sering diajukan kepada kami. Temukan informasi yang Anda butuhkan di bawah ini.
+      </p>
+    </div>
+
+    <div class="space-y-4" id="faq-accordion">
+      {renderedFaqs.map((item, idx) => (
+        <div class="faq-item rounded-2xl bg-white border border-slate-200 shadow-sm transition overflow-hidden">
+          <button
+            type="button"
+            class="faq-trigger flex w-full items-center justify-between p-5 sm:p-6 text-left font-bold text-slate-800 hover:text-hijau-800 transition focus:outline-none"
+            aria-expanded={idx === 0 ? "true" : "false"}
+          >
+            <span class="text-base sm:text-lg pr-4">{item.question}</span>
+            <span class="faq-icon flex size-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 text-sm font-bold transition-transform duration-300">
+              +
+            </span>
+          </button>
+          <div class={`faq-content px-5 sm:px-6 pb-6 text-sm text-slate-600 leading-relaxed ${idx === 0 ? 'block' : 'hidden'}`}>
+            <div class="border-t border-slate-100 pt-4 prose prose-sm max-w-none text-slate-600">
+              <item.Content />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-10 text-center">
+      <p class="text-sm text-slate-500">
+        Punya pertanyaan lain yang belum terjawab? <a href="/kontak" class="font-bold text-hijau-700 hover:underline">Hubungi Kontak Madrasah →</a>
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  const items = document.querySelectorAll('.faq-item');
+
+  items.forEach((item) => {
+    const trigger = item.querySelector('.faq-trigger');
+    const content = item.querySelector('.faq-content');
+    const icon = item.querySelector('.faq-icon');
+
+    trigger?.addEventListener('click', () => {
+      const isHidden = content?.classList.contains('hidden');
+
+      // Close other items
+      items.forEach((other) => {
+        other.querySelector('.faq-content')?.classList.add('hidden');
+        const otherIcon = other.querySelector('.faq-icon');
+        if (otherIcon) {
+          otherIcon.textContent = '+';
+          otherIcon.classList.remove('bg-hijau-800', 'text-white');
+        }
+        other.querySelector('.faq-trigger')?.setAttribute('aria-expanded', 'false');
+      });
+
+      if (isHidden) {
+        content?.classList.remove('hidden');
+        if (icon) {
+          icon.textContent = '−';
+          icon.classList.add('bg-hijau-800', 'text-white');
+        }
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+</script>

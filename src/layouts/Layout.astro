@@ -1,0 +1,227 @@
+---
+import '../styles/global.css'
+interface Props {
+  title: string
+  description?: string
+}
+const { title, description } = Astro.props
+const siteTitle = 'MIN 2 Kulon Progo'
+const siteDesc = 'Madrasah Ibtidaiyah Negeri 2 Kulon Progo — Madrasah unggulan beriman, cerdas, berkarakter, dan berwawasan lingkungan di Wates, Kulon Progo'
+---
+
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description ?? siteDesc} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description ?? siteDesc} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+    </style>
+  </head>
+  <body class="flex min-h-screen flex-col bg-white text-slate-800">
+
+    <!-- Main Navigation Bar (Sticky Top ala Sapen) -->
+    <header class="sticky top-0 z-50 bg-dark-blue/95 backdrop-blur-md text-white shadow-lg border-b border-white/10">
+      <div class="container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3.5">
+
+        <!-- Logo & Branding -->
+        <a href="/" class="flex items-center gap-3 group">
+          <div class="size-11 overflow-hidden rounded-xl bg-white p-1 shadow-md group-hover:scale-105 transition">
+            <img src="/images/logo.jpeg" alt="Logo MIN 2 Kulon Progo" class="size-full object-contain" />
+          </div>
+          <div class="leading-tight">
+            <span class="block text-base sm:text-lg font-extrabold text-white tracking-wide group-hover:text-kuning-400 transition">
+              MIN 2 Kulon Progo
+            </span>
+            <span class="block text-[11px] font-medium text-emerald-300/90 tracking-wide">
+              Madrasah Ibtidaiyah Negeri
+            </span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden lg:flex items-center gap-7 text-sm font-semibold">
+          <a href="/" class="text-white hover:text-kuning-400 transition">Beranda</a>
+          <a href="/profil" class="text-slate-200 hover:text-kuning-400 transition">Profil</a>
+          <a href="/visi-misi" class="text-slate-200 hover:text-kuning-400 transition">Visi Misi</a>
+          <a href="/kurikulum" class="text-slate-200 hover:text-kuning-400 transition">Kurikulum</a>
+          <a href="/program-keunggulan" class="text-slate-200 hover:text-kuning-400 transition">Keunggulan</a>
+          <a href="/guru-staf" class="text-slate-200 hover:text-kuning-400 transition">Guru & Staf</a>
+          <a href="/berita" class="text-slate-200 hover:text-kuning-400 transition">Berita</a>
+          <a href="/galeri" class="text-slate-200 hover:text-kuning-400 transition">Galeri</a>
+          <a href="/faq" class="text-slate-200 hover:text-kuning-400 transition">FAQ</a>
+          <a href="/kontak" class="text-slate-200 hover:text-kuning-400 transition">Kontak</a>
+        </div>
+
+        <!-- Right Action Button -->
+        <div class="flex items-center gap-3">
+          <!-- Mobile Toggle Button -->
+          <button
+            id="nav-toggle"
+            class="inline-flex size-10 items-center justify-center rounded-xl bg-white/10 text-white hover:bg-white/20 lg:hidden focus:outline-none"
+            aria-label="Buka menu navigasi"
+            aria-expanded="false"
+          >
+            <svg id="nav-icon-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" /></svg>
+            <svg id="nav-icon-close" class="hidden size-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Dropdown Menu -->
+      <nav id="mobile-menu" class="hidden border-t border-white/10 bg-dark-blue px-5 py-4 lg:hidden">
+        <div class="flex flex-col space-y-3 text-sm font-semibold">
+          <a href="/" class="block py-1.5 text-white hover:text-kuning-400">Beranda</a>
+          <a href="/profil" class="block py-1.5 text-slate-200 hover:text-kuning-400">Profil Madrasah</a>
+          <a href="/visi-misi" class="block py-1.5 text-slate-200 hover:text-kuning-400">Visi & Misi</a>
+          <a href="/kurikulum" class="block py-1.5 text-slate-200 hover:text-kuning-400">Kurikulum Satuan Pendidikan</a>
+          <a href="/program-keunggulan" class="block py-1.5 text-slate-200 hover:text-kuning-400">Program Keunggulan</a>
+          <a href="/guru-staf" class="block py-1.5 text-slate-200 hover:text-kuning-400">Guru & Staf</a>
+          <a href="/berita" class="block py-1.5 text-slate-200 hover:text-kuning-400">Berita & Pengumuman</a>
+          <a href="/galeri" class="block py-1.5 text-slate-200 hover:text-kuning-400">Galeri Foto</a>
+          <a href="/faq" class="block py-1.5 text-slate-200 hover:text-kuning-400">Tanya Jawab (FAQ)</a>
+          <a href="/kontak" class="block py-1.5 text-slate-200 hover:text-kuning-400">Hubungi Kami</a>
+        </div>
+      </nav>
+    </header>
+
+    <script>
+      const toggle = document.getElementById('nav-toggle');
+      const menu = document.getElementById('mobile-menu');
+      const iconOpen = document.getElementById('nav-icon-open');
+      const iconClose = document.getElementById('nav-icon-close');
+
+      toggle?.addEventListener('click', () => {
+        const isHidden = menu?.classList.toggle('hidden');
+        iconOpen?.classList.toggle('hidden');
+        iconClose?.classList.toggle('hidden');
+        toggle.setAttribute('aria-expanded', String(!isHidden));
+      });
+    </script>
+
+    <!-- Main Page Content -->
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <!-- Rich Footer ala SD Muh Sapen -->
+    <footer class="bg-dark-blue text-white pt-16 pb-8 border-t border-white/10 mt-auto">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4 pb-12 border-b border-white/10">
+
+          <!-- Col 1: Brand & Bio -->
+          <div>
+            <div class="flex items-center gap-3 mb-4">
+              <div class="size-12 overflow-hidden rounded-xl bg-white p-1 shadow-md">
+                <img src="/images/logo.jpeg" alt="Logo MIN 2 Kulon Progo" class="size-full object-contain" />
+              </div>
+              <div>
+                <h4 class="text-base font-extrabold text-white">MIN 2 Kulon Progo</h4>
+                <p class="text-xs text-emerald-300 font-medium">Kemenag Kab. Kulon Progo</p>
+              </div>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed mb-4">
+              Madrasah Ibtidaiyah Negeri unggulan berkarakter islami, berbasis Kurikulum Merdeka, Sekolah Adiwiyata, dan Ramah Anak di tepi barat Sungai Serang.
+            </p>
+
+            <div class="text-xs text-slate-300 space-y-2">
+              <p class="flex items-start gap-2">
+                <span>📍</span>
+                <span>Dusun Dukuh, Ngestiharjo, Wates, Kabupaten Kulon Progo, D.I. Yogyakarta 55651</span>
+              </p>
+              <p class="flex items-center gap-2">
+                <span>📞</span>
+                <span>(0274) Wates — MIN 2 KP</span>
+              </p>
+              <p class="flex items-center gap-2">
+                <span>✉️</span>
+                <span>min2kulonprogo@kemenag.go.id</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Col 2: Navigasi Cepat -->
+          <div>
+            <h4 class="text-sm font-extrabold uppercase tracking-wider text-kuning-400 mb-4 pb-1 border-b border-white/10 inline-block">
+              Navigasi Halaman
+            </h4>
+            <ul class="space-y-2.5 text-xs text-slate-300">
+              <li><a href="/" class="hover:text-kuning-400 transition">Beranda</a></li>
+              <li><a href="/profil" class="hover:text-kuning-400 transition">Profil Madrasah</a></li>
+              <li><a href="/visi-misi" class="hover:text-kuning-400 transition">Visi, Misi & Tujuan</a></li>
+              <li><a href="/kurikulum" class="hover:text-kuning-400 transition">Kurikulum 2026/2027</a></li>
+              <li><a href="/program-keunggulan" class="hover:text-kuning-400 transition">Program Unggulan</a></li>
+              <li><a href="/guru-staf" class="hover:text-kuning-400 transition">Tenaga Pendidik & Kependidikan</a></li>
+              <li><a href="/berita" class="hover:text-kuning-400 transition">Berita & Pengumuman</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 3: Informasi & Identitas -->
+          <div>
+            <h4 class="text-sm font-extrabold uppercase tracking-wider text-kuning-400 mb-4 pb-1 border-b border-white/10 inline-block">
+              Identitas Madrasah
+            </h4>
+            <div class="space-y-2.5 text-xs text-slate-300">
+              <div>
+                <p class="text-slate-400">Nomor Statistik Madrasah (NSM):</p>
+                <p class="font-bold text-white font-mono">111134010002</p>
+              </div>
+              <div>
+                <p class="text-slate-400">Nomor Pokok Sekolah Nasional (NPSN):</p>
+                <p class="font-bold text-white font-mono">60714005</p>
+              </div>
+              <div>
+                <p class="text-slate-400">Status Akreditasi:</p>
+                <p class="font-bold text-emerald-400">A (Unggul) — BAN-S/M</p>
+              </div>
+              <div>
+                <p class="text-slate-400">Naungan Lembaga:</p>
+                <p class="font-semibold text-white">Kementerian Agama RI</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 4: Tautan Layanan & Admin -->
+          <div>
+            <h4 class="text-sm font-extrabold uppercase tracking-wider text-kuning-400 mb-4 pb-1 border-b border-white/10 inline-block">
+              Layanan Digital
+            </h4>
+            <ul class="space-y-2.5 text-xs text-slate-300 mb-6">
+              <li><a href="https://rdm.kemenag.go.id/" target="_blank" rel="noopener" class="hover:text-kuning-400 transition">Rapor Digital Madrasah (RDM) ↗</a></li>
+              <li><a href="https://emis.kemenag.go.id/" target="_blank" rel="noopener" class="hover:text-kuning-400 transition">EMIS Kemenag 4.0 ↗</a></li>
+              <li><a href="https://simpatika.kemenag.go.id/" target="_blank" rel="noopener" class="hover:text-kuning-400 transition">SIMPATIKA PTK ↗</a></li>
+              <li><a href="/faq" class="hover:text-kuning-400 transition">Pusat Bantuan / FAQ</a></li>
+              <li><a href="/kontak" class="hover:text-kuning-400 transition">Kontak Resmi & Peta</a></li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+          <p>© 2026 MIN 2 Kulon Progo. Hak Cipta Dilindungi.</p>
+          <div class="flex items-center gap-4">
+            <a href="/profil" class="hover:text-white">Tentang</a>
+            <span>•</span>
+            <a href="/faq" class="hover:text-white">FAQ</a>
+            <span>•</span>
+            <a href="/kontak" class="hover:text-white">Kontak</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </body>
+</html>

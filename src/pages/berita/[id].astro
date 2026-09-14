@@ -1,0 +1,90 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import { getCollection, render } from 'astro:content'
+import { formatDate } from '../../lib/utils'
+
+export async function getStaticPaths() {
+  const berita = await getCollection('berita')
+  return berita.map((b) => ({ params: { id: b.id } }))
+}
+
+const { id } = Astro.params
+const berita = await getCollection('berita')
+const entry = berita.find((b) => b.id === id)
+if (!entry) return Astro.redirect('/berita')
+
+const { Content } = await render(entry)
+import PageHeader from '../../components/PageHeader.astro'
+---
+
+<Layout title={`${entry.data.title} — MIN 2 Kulon Progo`}>
+  <PageHeader title="Berita" />
+  <article class="mx-auto max-w-3xl px-4 py-12">
+    <p class="text-sm text-slate-500">{formatDate(entry.data.date)}</p>
+    <h1 class="mt-2 text-3xl font-bold text-biru-900">{entry.data.title}</h1>
+    {entry.data.cover && (
+      <img src={entry.data.cover} alt={entry.data.title} class="mt-6 aspect-video w-full rounded-xl object-cover" />
+    )}
+    <div class="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8 [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-bold [&_table]:mt-4 [&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-slate-300 [&_td]:px-3 [&_td]:py-2 [&_th]:border [&_th]:border-slate-300 [&_th]:bg-slate-50 [&_th]:px-3 [&_th]:py-2 [&_ul]:mt-2 [&_ul]:list-disc [&_ol]:mt-2 [&_ol]:list-decimal [&_li]:ml-6 [&_li]:mt-1 [&_p]:mt-2 [&_p]:leading-relaxed [&_p]:text-slate-600">
+      <Content />
+    </div>
+    <!-- Share buttons -->
+    <div class="mt-8 flex flex-wrap items-center gap-3">
+      <span class="text-sm font-semibold text-slate-500">Bagikan:</span>
+      <a
+        id="share-wa"
+        href="#"
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center gap-1.5 rounded-full bg-green-600 px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-green-700"
+      >
+        <svg class="size-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785h-.01a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.981.999-3.648-.235-.374A9.86 9.86 0 0 1 2.2 12.05c0-5.438 4.424-9.862 9.87-9.862a9.86 9.86 0 0 1 9.862 9.87c-.004 5.438-4.428 9.858-9.868 9.858l-.013-.001zM20.52 3.449A11.8 11.8 0 0 0 12.05.002C5.463.002.104 5.36.1 11.95a11.88 11.88 0 0 0 1.587 5.945L0 24l6.304-1.654a11.88 11.88 0 0 0 5.683 1.448h.005c6.585 0 11.946-5.36 11.95-11.95a11.88 11.88 0 0 0-3.497-8.44l.075.045z"/></svg>
+        WhatsApp
+      </a>
+      <a
+        id="share-fb"
+        href="#"
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-blue-700"
+      >
+        <svg class="size-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Facebook
+      </a>
+      <a
+        id="share-x"
+        href="#"
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center gap-1.5 rounded-full bg-slate-800 px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-slate-900"
+      >
+        <svg class="size-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        X
+      </a>
+      <button
+        id="share-copy"
+        type="button"
+        class="inline-flex items-center gap-1.5 rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:bg-slate-50"
+      >
+        <svg class="size-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Salin Link
+      </button>
+    </div>
+
+    <script define:vars={{ title: entry.data.title, articleId: id }}>
+      const url = `${window.location.origin}/berita/${articleId}`
+      const text = `${title} — MIN 2 Kulon Progo`
+      document.getElementById('share-wa').href = `https://wa.me/?text=${encodeURIComponent(text + '\n' + url)}`
+      document.getElementById('share-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
+      document.getElementById('share-x').href = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`
+      document.getElementById('share-copy').addEventListener('click', function () {
+        navigator.clipboard.writeText(url).then(() => {
+          this.textContent = '✓ Tersalin!'
+          setTimeout(() => { this.textContent = 'Salin Link' }, 2000)
+        })
+      })
+    </script>
+
+    <a href="/berita" class="mt-6 inline-block font-semibold text-hijau-700 hover:underline">← Kembali ke Berita</a>
+  </article>
+</Layout>

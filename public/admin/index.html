@@ -1,0 +1,3487 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Panel Pengelola Konten — MIN 2 Kulon Progo</title>
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark-blue': '#0b2239',
+            'hijau-800': '#166534',
+            'hijau-900': '#14532d',
+            'hijau-700': '#15803d',
+            'kuning-400': '#facc15',
+            'kuning-500': '#eab308',
+            'oren': '#f86f03',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .tab-btn.active {
+      background-color: #166534;
+      color: #ffffff;
+      border-color: #166534;
+      box-shadow: 0 10px 15px -3px rgba(22, 101, 52, 0.2);
+    }
+    .tab-btn:not(.active) {
+      background-color: #ffffff;
+      color: #334155;
+      border-color: #e2e8f0;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col font-sans">
+
+  <!-- ============================================================ -->
+  <!-- 1. HALAMAN MASUK                            -->
+  <!-- ============================================================ -->
+  <div id="login-view" class="fixed inset-0 z-[999999] flex items-center justify-center bg-slate-900/85 backdrop-blur-md p-4">
+    <div class="w-full max-w-md rounded-3xl bg-white p-8 sm:p-10 shadow-2xl border-4 border-emerald-600">
+      <div class="text-center mb-6">
+        <img src="/images/logo.jpeg" alt="Logo MIN 2 Kulon Progo" class="mx-auto mb-3 size-20 object-contain">
+        <h1 class="text-2xl font-black text-dark-blue">Panel Pengelola Konten</h1>
+        <p class="text-sm font-semibold text-slate-500 mt-1">MIN 2 Kulon Progo Yogyakarta</p>
+      </div>
+
+      <div id="login-err" class="hidden mb-5 rounded-2xl bg-red-100 border-2 border-red-300 p-4 text-sm font-bold text-red-800"></div>
+
+      <form id="form-login" class="space-y-4">
+        <div>
+          <label class="block text-sm font-extrabold text-slate-700 mb-1" for="input-user">Nama Pengguna</label>
+          <input id="input-user" name="username" type="text" required autofocus placeholder="Contoh: admin"
+            class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-semibold outline-none focus:border-hijau-800 focus:bg-emerald-50/30" />
+        </div>
+        <div>
+          <label class="block text-sm font-extrabold text-slate-700 mb-1" for="input-pass">Kata Sandi</label>
+          <input id="input-pass" name="password" type="password" required placeholder="Masukkan kata sandi"
+            class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-semibold outline-none focus:border-hijau-800 focus:bg-emerald-50/30" />
+        </div>
+        <button type="submit" id="btn-login-submit"
+          class="w-full rounded-2xl bg-hijau-800 py-4 text-base font-extrabold text-white shadow-xl hover:bg-hijau-900 hover:scale-[1.02] active:scale-[0.98] transition cursor-pointer mt-2">
+          Masuk
+        </button>
+      </form>
+
+      <div class="mt-6 pt-5 border-t border-slate-200 text-center">
+        <a href="/" class="text-sm font-bold text-emerald-800 hover:underline">Kembali ke halaman utama</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 2. TOP ADMIN HEADER / BAR                                    -->
+  <!-- ============================================================ -->
+  <header id="admin-bar" class="hidden sticky top-0 z-[999] bg-dark-blue text-white shadow-lg border-b-4 border-kuning-400">
+    <div class="container mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <img src="/images/logo.jpeg" alt="Logo MIN 2 Kulon Progo" class="size-11 rounded-xl bg-white p-1 object-contain shadow-md">
+        <div>
+          <h1 class="text-base sm:text-lg font-extrabold text-white leading-tight">Panel Pengelola Konten</h1>
+          <p class="text-xs text-emerald-300 font-semibold">MIN 2 Kulon Progo</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button onclick="logoutAdmin()" class="rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-extrabold px-4 py-2.5 shadow transition flex items-center gap-1.5 cursor-pointer">
+          <span>Keluar</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- 3. DASBOR UTAMA   -->
+  <!-- ============================================================ -->
+  <main id="admin-main" class="hidden flex-1 pb-24">
+
+    <!-- Petunjuk Sederhana -->
+    <div class="bg-emerald-800 text-white py-5 px-4 sm:px-6 shadow-inner">
+      <div class="container mx-auto max-w-6xl">
+        <h2 class="text-xl sm:text-2xl font-black text-kuning-400">Pengelolaan Konten Situs</h2>
+        <p class="text-sm sm:text-base text-emerald-100 mt-1">
+          Pilih kategori konten di bawah untuk menambah, mengubah, atau menghapus data.
+        </p>
+      </div>
+    </div>
+
+    <!-- Pilihan Menu / Tab Menu Besar -->
+    <div class="container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <button onclick="switchTab('carousel')" id="tab-carousel" class="tab-btn active p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
+          <span>Banner Beranda</span>
+        </button>
+        <button onclick="switchTab('berita')" id="tab-berita" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
+          <span>Berita</span>
+        </button>
+        <button onclick="switchTab('galeri')" id="tab-galeri" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
+          <span>Galeri Foto</span>
+        </button>
+        <button onclick="switchTab('faq')" id="tab-faq" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
+          <span>Tanya Jawab</span>
+        </button>
+        <button onclick="switchTab('halaman')" id="tab-halaman" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
+          <span>Halaman Profil</span>
+        </button>
+        <button onclick="switchTab('keunggulan')" id="tab-keunggulan" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
+          <span>Keunggulan</span>
+        </button>
+        <button onclick="switchTab('kurikulum')" id="tab-kurikulum" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
+          <span>Kurikulum</span>
+        </button>
+        <button onclick="switchTab('statistik')" id="tab-statistik" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
+          <span>Statistik</span>
+        </button>
+        <button onclick="switchTab('guru-staf')" id="tab-guru-staf" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
+          <span>Guru &amp; Staf</span>
+        </button>
+        <button onclick="switchTab('testimonial')" id="tab-testimonial" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
+          <span>Testimonial</span>
+        </button>
+        <button onclick="switchTab('aplikasi')" id="tab-aplikasi" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
+          <span>Aplikasi</span>
+        </button>
+        <button onclick="switchTab('profil-singkat')" id="tab-profil-singkat" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
+          <span>Profil Singkat</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Status Alert Bar -->
+    <div class="container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
+      <div id="global-alert" class="hidden rounded-2xl p-4 text-base font-bold shadow-md"></div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 1: BANNER BERANDA                          -->
+    <!-- ============================================================ -->
+    <div id="view-carousel" class="tab-view container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
+      <div class="rounded-3xl bg-white p-6 sm:p-8 shadow-sm border border-slate-200">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200">
+          <div>
+            <div class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 text-amber-900 px-3 py-1 text-xs font-black uppercase">
+              Beranda
+            </div>
+            <h3 class="text-2xl font-black text-dark-blue mt-1">Banner Beranda</h3>
+            <p class="text-slate-500 text-sm mt-0.5">Kelola gambar dan teks pada banner di bagian atas halaman beranda.</p>
+          </div>
+          <button onclick="startEditCarousel('new')" class="rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-base px-6 py-3.5 shadow-lg flex items-center gap-2 transition hover:scale-105 cursor-pointer">
+            <span>Tambah Banner</span>
+          </button>
+        </div>
+
+        <!-- FORMULIR BANNER -->
+        <div id="carousel-editor-box" class="hidden my-8 rounded-3xl bg-emerald-50/60 border-3 border-emerald-600 p-6 sm:p-8 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-emerald-200 mb-6">
+            <div class="flex items-center gap-3">
+              
+              <div>
+                <h4 id="carousel-form-title" class="text-xl font-black text-emerald-950">Formulir Banner</h4>
+                <p class="text-xs sm:text-sm font-semibold text-emerald-800">Lengkapi data berikut, lalu simpan.</p>
+              </div>
+            </div>
+            <button onclick="closeCarouselEditor()" class="rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 px-4 py-2 font-bold text-sm cursor-pointer">
+              Tutup
+            </button>
+          </div>
+
+          <form id="carousel-form" class="space-y-6" onsubmit="event.preventDefault(); saveCarousel();">
+            <input type="hidden" id="car-slug" value="">
+            <input type="hidden" id="car-sha" value="">
+
+            <!-- 1. Foto Banner & Tombol Ganti Foto -->
+            <div class="rounded-2xl bg-white p-5 border-2 border-emerald-200">
+              <label class="block text-base font-black text-slate-800 mb-2">
+                Gambar Latar Banner
+              </label>
+              <div class="flex flex-col md:flex-row gap-5 items-center">
+                <div class="w-full md:w-80 aspect-16/9 bg-slate-900 rounded-2xl overflow-hidden border-2 border-slate-300 relative shadow">
+                  <img id="car-img-preview" src="/images/qngqw.jpg" alt="Preview Foto" class="size-full object-cover" onerror="this.src='/images/qngqw.jpg'">
+                  <div class="absolute bottom-2 left-2 bg-black/70 text-white text-[11px] font-bold px-2 py-0.5 rounded">Foto Aktif</div>
+                </div>
+                <div class="flex-1 space-y-3">
+                  <p class="text-sm font-semibold text-slate-700">Unggah gambar dari perangkat Anda:</p>
+                  <label class="inline-flex items-center gap-2.5 rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold px-6 py-4 text-base shadow-lg transition hover:scale-105 cursor-pointer">
+                    <span>Pilih Gambar</span>
+                    <input type="file" accept="image/*" class="hidden" onchange="previewAndUploadCarouselImage(event)">
+                  </label>
+                  <input type="hidden" id="car-image" value="/images/qngqw.jpg">
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Teks Utama Slide -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div class="md:col-span-2">
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">
+                  1. Judul Besar Banner <span class="text-red-500">*</span>
+                </label>
+                <input type="text" id="car-title" required placeholder="Contoh: MIN 2 Kulon Progo"
+                  class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold text-slate-900 outline-none focus:border-hijau-800 bg-white">
+              </div>
+
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">
+                  2. Sub-Judul (Teks di Atas Judul Besar)
+                </label>
+                <input type="text" id="car-subtitle" placeholder="Contoh: Selamat Datang di"
+                  class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3 text-sm font-semibold text-slate-800 outline-none focus:border-hijau-800 bg-white">
+              </div>
+
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">
+                  3. Label Kecil / Badge Paling Atas
+                </label>
+                <input type="text" id="car-badge" placeholder="Contoh: Madrasah Ibtidaiyah Negeri Unggulan"
+                  class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3 text-sm font-semibold text-slate-800 outline-none focus:border-hijau-800 bg-white">
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">
+                  4. Kalimat Penjelasan / Deskripsi Singkat <span class="text-red-500">*</span>
+                </label>
+                <textarea id="car-description" rows="3" required placeholder="Tuliskan kalimat singkat yang menjelaskan slide ini..."
+                  class="w-full rounded-2xl border-2 border-slate-300 p-4 text-base font-medium text-slate-800 outline-none focus:border-hijau-800 bg-white"></textarea>
+              </div>
+
+              <!-- Tombol Utama -->
+              <div class="p-4 rounded-2xl bg-white border border-slate-200 space-y-3">
+                <p class="font-black text-sm text-slate-800">Tombol Utama</p>
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 mb-1">Tulisan di Tombol:</label>
+                  <input type="text" id="car-btn1-text" placeholder="Contoh: Pelajari Selengkapnya"
+                    class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm font-semibold">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 mb-1">Buka Halaman:</label>
+                  <select id="car-btn1-select" onchange="document.getElementById('car-btn1-link').value = this.value" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm font-semibold bg-slate-50">
+                    <option value="/profil">Halaman Profil Madrasah</option>
+                    <option value="/visi-misi">Halaman Visi & Misi</option>
+                    <option value="/program-keunggulan">Halaman Program Keunggulan</option>
+                    <option value="/kurikulum">Halaman Kurikulum</option>
+                    <option value="/galeri">Halaman Galeri Foto</option>
+                    <option value="/berita">Halaman Berita</option>
+                    <option value="/kontak">Halaman Kontak Madrasah</option>
+                  </select>
+                  <input type="hidden" id="car-btn1-link" value="/profil">
+                </div>
+              </div>
+
+              <!-- Tombol Kedua -->
+              <div class="p-4 rounded-2xl bg-white border border-slate-200 space-y-3">
+                <p class="font-black text-sm text-slate-800">Tombol Kedua</p>
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 mb-1">Tulisan di Tombol (Opsional):</label>
+                  <input type="text" id="car-btn2-text" placeholder="Contoh: Kurikulum 2026/2027"
+                    class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm font-semibold">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 mb-1">Buka Halaman:</label>
+                  <select id="car-btn2-select" onchange="document.getElementById('car-btn2-link').value = this.value" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm font-semibold bg-slate-50">
+                    <option value="">-- Tidak Perlu Tombol Kedua --</option>
+                    <option value="/kurikulum">Halaman Kurikulum</option>
+                    <option value="/profil">Halaman Profil Madrasah</option>
+                    <option value="/visi-misi">Halaman Visi & Misi</option>
+                    <option value="/program-keunggulan">Halaman Program Keunggulan</option>
+                    <option value="/galeri">Halaman Galeri Foto</option>
+                    <option value="/berita">Halaman Berita</option>
+                    <option value="/kontak">Halaman Kontak Madrasah</option>
+                  </select>
+                  <input type="hidden" id="car-btn2-link" value="">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">
+                  Urutan Tampil (Nomor 1, 2, 3, dst):
+                </label>
+                <input type="number" id="car-order" value="1" min="1" max="99"
+                  class="w-32 rounded-xl border-2 border-slate-300 px-3.5 py-2.5 text-base font-black text-slate-900 bg-white">
+              </div>
+            </div>
+
+            <!-- Tombol Aksi Simpan Form -->
+            <div class="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-emerald-200">
+              <button type="button" id="btn-car-delete" onclick="deleteCurrentCarousel()" class="hidden rounded-2xl bg-red-100 hover:bg-red-200 text-red-700 px-5 py-3.5 text-sm font-extrabold transition cursor-pointer">
+                Hapus Banner
+              </button>
+              <div class="flex items-center gap-3 ml-auto">
+                <button type="button" onclick="closeCarouselEditor()" class="rounded-2xl border-2 border-slate-300 bg-white hover:bg-slate-100 px-6 py-3.5 text-sm font-bold text-slate-700 transition cursor-pointer">
+                  Batal
+                </button>
+                <button type="submit" id="btn-car-save" class="rounded-2xl bg-hijau-800 hover:bg-hijau-900 text-white px-8 py-3.5 text-base font-black shadow-xl transition hover:scale-105 cursor-pointer">
+                  Simpan Banner
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- DAFTAR BANNER -->
+        <div class="mt-6">
+          <h4 class="text-lg font-black text-slate-800 mb-4">Daftar Banner Aktif</h4>
+          <div id="carousel-cards-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Diisi lewat Javascript -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 2: EDIT BERITA & PENGUMUMAN                              -->
+    <!-- ============================================================ -->
+    <div id="view-berita" class="tab-view hidden container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
+      <div class="rounded-3xl bg-white p-6 sm:p-8 shadow-sm border border-slate-200">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200">
+          <div>
+            <div class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 text-hijau-800 px-3 py-1 text-xs font-black uppercase">
+              Berita
+            </div>
+            <h3 class="text-2xl font-black text-dark-blue mt-1">Berita & Pengumuman</h3>
+            <p class="text-slate-500 text-sm mt-0.5">Tulis berita kegiatan, pengumuman sekolah, dan prestasi siswa.</p>
+          </div>
+          <button onclick="startEditBerita('new')" class="rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-base px-6 py-3.5 shadow-lg flex items-center gap-2 transition hover:scale-105 cursor-pointer">
+            <span>Tambah Berita</span>
+          </button>
+        </div>
+
+        <!-- Inline Editor Berita -->
+        <div id="berita-editor-box" class="hidden my-8 rounded-3xl bg-emerald-50/60 border-3 border-emerald-600 p-6 sm:p-8 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-emerald-200 mb-6">
+            <div class="flex items-center gap-3">
+              
+              <div>
+                <h4 id="berita-form-title" class="text-xl font-black text-emerald-950">Formulir Berita</h4>
+                <p class="text-xs sm:text-sm font-semibold text-emerald-800">Isi berita lalu klik Simpan.</p>
+              </div>
+            </div>
+            <button onclick="closeBeritaEditor()" class="rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 px-4 py-2 font-bold text-sm cursor-pointer">
+              Tutup
+            </button>
+          </div>
+
+          <form id="berita-form" class="space-y-5" onsubmit="event.preventDefault(); saveBerita();">
+            <input type="hidden" id="berita-slug" value="">
+            <input type="hidden" id="berita-sha" value="">
+
+            <div>
+              <label class="block text-sm font-extrabold text-slate-800 mb-1">Judul Berita <span class="text-red-500">*</span></label>
+              <input type="text" id="berita-title" required placeholder="Contoh: Siswa MIN 2 Kulon Progo Raih Juara Tahfidz"
+                class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold text-slate-900 bg-white">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Tanggal Berita</label>
+                <input type="date" id="berita-date" class="w-full rounded-xl border-2 border-slate-300 px-4 py-3 text-sm font-semibold bg-white">
+              </div>
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Foto Sampul Berita</label>
+                <div class="flex items-center gap-3">
+                  <label class="rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm px-4 py-3 cursor-pointer shrink-0 shadow">
+                    Pilih Gambar
+                    <input type="file" accept="image/*" class="hidden" onchange="uploadSinglePhoto(event, 'berita-cover')">
+                  </label>
+                  <span id="berita-cover-status" class="text-xs text-slate-500 font-semibold truncate"></span>
+                  <input type="hidden" id="berita-cover" value="">
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-extrabold text-slate-800 mb-1">Ringkasan</label>
+              <textarea id="berita-excerpt" rows="2" placeholder="Ringkasan satu hingga dua kalimat" class="w-full rounded-xl border-2 border-slate-300 p-3 text-sm bg-white"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-extrabold text-slate-800 mb-1">Isi Lengkap Berita <span class="text-red-500">*</span></label>
+              <textarea id="berita-body" rows="8" required placeholder="Tuliskan isi berita" class="w-full rounded-2xl border-2 border-slate-300 p-4 text-base bg-white leading-relaxed"></textarea>
+            </div>
+
+            <div class="flex items-center justify-between pt-5 border-t border-emerald-200">
+              <button type="button" id="btn-berita-delete" onclick="deleteCurrentBerita()" class="hidden rounded-2xl bg-red-100 hover:bg-red-200 text-red-700 px-5 py-3 text-sm font-bold cursor-pointer">
+                Hapus Berita
+              </button>
+              <div class="flex items-center gap-3 ml-auto">
+                <button type="button" onclick="closeBeritaEditor()" class="rounded-2xl border-2 border-slate-300 bg-white hover:bg-slate-100 px-6 py-3 text-sm font-bold text-slate-700 cursor-pointer">
+                  Batal
+                </button>
+                <button type="submit" id="btn-berita-save" class="rounded-2xl bg-hijau-800 hover:bg-hijau-900 text-white px-8 py-3.5 text-base font-black shadow-xl cursor-pointer">
+                  Simpan Berita
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Daftar Berita -->
+        <div class="mt-6">
+          <div id="berita-cards-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Diisi lewat JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 3: EDIT GALERI FOTO                                      -->
+    <!-- ============================================================ -->
+    <div id="view-galeri" class="tab-view hidden container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
+      <div class="rounded-3xl bg-white p-6 sm:p-8 shadow-sm border border-slate-200">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200">
+          <div>
+            <div class="inline-flex items-center gap-1.5 rounded-full bg-blue-100 text-blue-900 px-3 py-1 text-xs font-black uppercase">
+              Galeri
+            </div>
+            <h3 class="text-2xl font-black text-dark-blue mt-1">Galeri Foto Kegiatan</h3>
+            <p class="text-slate-500 text-sm mt-0.5">Kelola album foto kegiatan madrasah.</p>
+          </div>
+          <button onclick="startEditGaleri('new')" class="rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-extrabold text-base px-6 py-3.5 shadow-lg flex items-center gap-2 transition hover:scale-105 cursor-pointer">
+            <span>Tambah Album</span>
+          </button>
+        </div>
+
+        <!-- Inline Editor Galeri -->
+        <div id="galeri-editor-box" class="hidden my-8 rounded-3xl bg-blue-50/60 border-3 border-blue-600 p-6 sm:p-8 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-blue-200 mb-6">
+            <div class="flex items-center gap-3">
+              <div>
+                <h4 id="galeri-form-title" class="text-xl font-black text-blue-950">Formulir Album</h4>
+                <p class="text-xs sm:text-sm font-semibold text-blue-800">Unggah foto-foto kegiatan.</p>
+              </div>
+            </div>
+            <button onclick="closeGaleriEditor()" class="rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 px-4 py-2 font-bold text-sm cursor-pointer">
+              Tutup
+            </button>
+          </div>
+
+          <form id="galeri-form" class="space-y-5" onsubmit="event.preventDefault(); saveGaleri();">
+            <input type="hidden" id="galeri-slug" value="">
+            <input type="hidden" id="galeri-sha" value="">
+
+            <div>
+              <label class="block text-sm font-extrabold text-slate-800 mb-1">Judul Album Foto <span class="text-red-500">*</span></label>
+              <input type="text" id="galeri-title" required placeholder="Contoh: Kegiatan Adiwiyata & Menanam Pohon"
+                class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold bg-white">
+            </div>
+
+            <div>
+              <label class="block text-sm font-extrabold text-slate-800 mb-1">Deskripsi Singkat</label>
+              <textarea id="galeri-desc" rows="2" placeholder="Keterangan singkat album" class="w-full rounded-xl border-2 border-slate-300 p-3 text-sm bg-white"></textarea>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-white border-2 border-blue-200 space-y-3">
+              <label class="block text-base font-extrabold text-slate-800">Foto Kegiatan</label>
+              <label class="inline-flex items-center gap-2.5 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-extrabold px-6 py-3.5 text-base shadow-md cursor-pointer transition hover:scale-105">
+                <span>Pilih Beberapa Foto</span>
+                <input type="file" multiple accept="image/*" class="hidden" onchange="uploadMultiplePhotos(event)">
+              </label>
+              <div id="galeri-photos-preview" class="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-2"></div>
+              <input type="hidden" id="galeri-photos-text" value="">
+            </div>
+
+            <div class="flex items-center justify-between pt-5 border-t border-blue-200">
+              <button type="button" id="btn-galeri-delete" onclick="deleteCurrentGaleri()" class="hidden rounded-2xl bg-red-100 hover:bg-red-200 text-red-700 px-5 py-3 text-sm font-bold cursor-pointer">
+                Hapus Album
+              </button>
+              <div class="flex items-center gap-3 ml-auto">
+                <button type="button" onclick="closeGaleriEditor()" class="rounded-2xl border-2 border-slate-300 bg-white hover:bg-slate-100 px-6 py-3 text-sm font-bold text-slate-700 cursor-pointer">
+                  Batal
+                </button>
+                <button type="submit" id="btn-galeri-save" class="rounded-2xl bg-blue-800 hover:bg-blue-900 text-white px-8 py-3.5 text-base font-black shadow-xl cursor-pointer">
+                  Simpan Album
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Daftar Galeri -->
+        <div class="mt-6">
+          <div id="galeri-cards-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Diisi lewat JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 4: EDIT TANYA JAWAB (FAQ)                                -->
+    <!-- ============================================================ -->
+    <div id="view-faq" class="tab-view hidden container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
+      <div class="rounded-3xl bg-white p-6 sm:p-8 shadow-sm border border-slate-200">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200">
+          <div>
+            <div class="inline-flex items-center gap-1.5 rounded-full bg-orange-100 text-oren px-3 py-1 text-xs font-black uppercase">
+              Tanya Jawab
+            </div>
+            <h3 class="text-2xl font-black text-dark-blue mt-1">Tanya Jawab</h3>
+            <p class="text-slate-500 text-sm mt-0.5">Kelola pertanyaan yang sering diajukan beserta jawabannya.</p>
+          </div>
+          <button onclick="startEditFaq('new')" class="rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-base px-6 py-3.5 shadow-lg flex items-center gap-2 transition hover:scale-105 cursor-pointer">
+            <span>Tambah Pertanyaan</span>
+          </button>
+        </div>
+
+        <!-- Inline Editor FAQ -->
+        <div id="faq-editor-box" class="hidden my-8 rounded-3xl bg-amber-50/60 border-3 border-amber-600 p-6 sm:p-8 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-amber-200 mb-6">
+            <div class="flex items-center gap-3">
+              
+              <div>
+                <h4 id="faq-form-title" class="text-xl font-black text-amber-950">Formulir Tanya Jawab</h4>
+                <p class="text-xs sm:text-sm font-semibold text-amber-800">Ketik pertanyaan dan jawaban.</p>
+              </div>
+            </div>
+            <button onclick="closeFaqEditor()" class="rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 px-4 py-2 font-bold text-sm cursor-pointer">
+              Tutup
+            </button>
+          </div>
+
+          <form id="faq-form" class="space-y-5" onsubmit="event.preventDefault(); saveFaq();">
+            <input type="hidden" id="faq-slug" value="">
+            <input type="hidden" id="faq-sha" value="">
+
+            <div>
+              <label class="block text-sm font-extrabold text-slate-800 mb-1">Pertanyaan <span class="text-red-500">*</span></label>
+              <input type="text" id="faq-question" required placeholder="Contoh: Bagaimana cara mendaftar di MIN 2 Kulon Progo?"
+                class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold bg-white">
+            </div>
+
+            <div>
+              <label class="block text-sm font-extrabold text-slate-800 mb-1">Jawaban Lengkap <span class="text-red-500">*</span></label>
+              <textarea id="faq-body" rows="5" required placeholder="Tuliskan jawaban" class="w-full rounded-2xl border-2 border-slate-300 p-4 text-base bg-white leading-relaxed"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-extrabold text-slate-800 mb-1">Urutan Tampil</label>
+              <input type="number" id="faq-order" value="1" min="1" class="w-28 rounded-xl border-2 border-slate-300 px-3.5 py-2 font-bold bg-white">
+            </div>
+
+            <div class="flex items-center justify-between pt-5 border-t border-amber-200">
+              <button type="button" id="btn-faq-delete" onclick="deleteCurrentFaq()" class="hidden rounded-2xl bg-red-100 hover:bg-red-200 text-red-700 px-5 py-3 text-sm font-bold cursor-pointer">
+                Hapus Pertanyaan
+              </button>
+              <div class="flex items-center gap-3 ml-auto">
+                <button type="button" onclick="closeFaqEditor()" class="rounded-2xl border-2 border-slate-300 bg-white hover:bg-slate-100 px-6 py-3 text-sm font-bold text-slate-700 cursor-pointer">
+                  Batal
+                </button>
+                <button type="submit" id="btn-faq-save" class="rounded-2xl bg-amber-700 hover:bg-amber-800 text-white px-8 py-3.5 text-base font-black shadow-xl cursor-pointer">
+                  Simpan Pertanyaan
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Daftar FAQ -->
+        <div class="mt-6">
+          <div id="faq-cards-list" class="space-y-4">
+            <!-- Diisi lewat JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 5: EDIT HALAMAN STATIS (PROFIL, VISI MISI, DLL)         -->
+    <!-- ============================================================ -->
+    <div id="view-halaman" class="tab-view hidden container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
+      <div class="rounded-3xl bg-white p-6 sm:p-8 shadow-sm border border-slate-200">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200">
+          <div>
+            <div class="inline-flex items-center gap-1.5 rounded-full bg-purple-100 text-purple-900 px-3 py-1 text-xs font-black uppercase">
+              Halaman
+            </div>
+            <h3 class="text-2xl font-black text-dark-blue mt-1">Halaman Profil</h3>
+            <p class="text-slate-500 text-sm mt-0.5">Tambah, ubah, atau hapus halaman informasi madrasah.</p>
+          </div>
+          <button onclick="startEditHalaman('new')" class="rounded-2xl bg-purple-800 hover:bg-purple-900 text-white font-extrabold text-base px-6 py-3.5 shadow-lg flex items-center gap-2 transition hover:scale-105 cursor-pointer">
+            <span>Tambah Halaman</span>
+          </button>
+        </div>
+
+        <!-- Inline Editor Halaman -->
+        <div id="halaman-editor-box" class="hidden my-8 rounded-3xl bg-purple-50/60 border-3 border-purple-600 p-6 sm:p-8 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-purple-200 mb-6">
+            <div class="flex items-center gap-3">
+              
+              <div>
+                <h4 id="halaman-form-title" class="text-xl font-black text-purple-950">Edit Halaman</h4>
+                <p class="text-xs sm:text-sm font-semibold text-purple-800">Ubah isi tulisan lalu klik Simpan.</p>
+              </div>
+            </div>
+            <button onclick="closeHalamanEditor()" class="rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 px-4 py-2 font-bold text-sm cursor-pointer">
+              Tutup
+            </button>
+          </div>
+
+          <form id="halaman-form" class="space-y-5" onsubmit="event.preventDefault(); saveHalaman();">
+            <input type="hidden" id="hal-slug" value="">
+            <input type="hidden" id="hal-sha" value="">
+
+            <div>
+              <label class="block text-sm font-extrabold text-slate-800 mb-1">Judul Halaman</label>
+              <input type="text" id="hal-title" required class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold bg-white">
+            </div>
+
+            <div>
+              <label class="block text-sm font-extrabold text-slate-800 mb-1">Isi Halaman</label>
+              <textarea id="hal-body" rows="12" required placeholder="Tuliskan isi halaman" class="w-full rounded-2xl border-2 border-slate-300 p-4 text-base bg-white leading-relaxed font-sans"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-extrabold text-slate-800 mb-1">Urutan Tampil</label>
+              <input type="number" id="hal-order" value="1" min="1" class="w-28 rounded-xl border-2 border-slate-300 px-3.5 py-2 font-bold bg-white">
+            </div>
+
+            <div class="flex items-center justify-between gap-3 pt-5 border-t border-purple-200">
+              <button type="button" id="btn-hal-delete" onclick="deleteCurrentHalaman()" class="hidden rounded-2xl bg-red-100 hover:bg-red-200 text-red-700 px-5 py-3 text-sm font-bold cursor-pointer">
+                Hapus Halaman
+              </button>
+              <div class="flex items-center gap-3 ml-auto">
+                <button type="button" onclick="closeHalamanEditor()" class="rounded-2xl border-2 border-slate-300 bg-white hover:bg-slate-100 px-6 py-3 text-sm font-bold text-slate-700 cursor-pointer">
+                  Batal
+                </button>
+                <button type="submit" id="btn-hal-save" class="rounded-2xl bg-purple-800 hover:bg-purple-900 text-white px-8 py-3.5 text-base font-black shadow-xl cursor-pointer">
+                  Simpan Halaman
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Daftar Halaman -->
+        <div class="mt-6">
+          <div id="halaman-cards-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB KEUNGGULAN                                                -->
+    <!-- ============================================================ -->
+    <div id="view-keunggulan" class="tab-view hidden container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
+      <div class="rounded-3xl bg-white p-6 sm:p-8 shadow-sm border border-slate-200">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200">
+          <div>
+            <div class="inline-flex items-center gap-1.5 rounded-full bg-lime-100 text-lime-900 px-3 py-1 text-xs font-black uppercase">
+              Keunggulan
+            </div>
+            <h3 class="text-2xl font-black text-dark-blue mt-1">Program Keunggulan</h3>
+            <p class="text-slate-500 text-sm mt-0.5">Kelola kartu keunggulan yang tampil di halaman beranda.</p>
+          </div>
+          <button onclick="startEditKeunggulan('new')" class="rounded-2xl bg-lime-700 hover:bg-lime-800 text-white font-extrabold text-base px-6 py-3.5 shadow-lg flex items-center gap-2 transition hover:scale-105 cursor-pointer">
+            <span>Tambah Keunggulan</span>
+          </button>
+        </div>
+
+        <div id="keunggulan-editor-box" class="hidden my-8 rounded-3xl bg-lime-50/60 border-3 border-lime-600 p-6 sm:p-8 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-lime-200 mb-6">
+            <div class="flex items-center gap-3">
+              <div>
+                <h4 id="keunggulan-form-title" class="text-xl font-black text-lime-950">Formulir Keunggulan</h4>
+                <p class="text-xs sm:text-sm font-semibold text-lime-800">Ubah isi tulisan, lalu klik Simpan.</p>
+              </div>
+            </div>
+            <button onclick="closeKeunggulanEditor()" class="rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 px-4 py-2 font-bold text-sm cursor-pointer">
+              Tutup
+            </button>
+          </div>
+
+          <form id="keunggulan-form" class="space-y-5" onsubmit="event.preventDefault(); saveKeunggulan();">
+            <input type="hidden" id="keu-slug" value="">
+            <input type="hidden" id="keu-sha" value="">
+
+            <div>
+              <label class="block text-sm font-extrabold text-slate-800 mb-1">Judul Keunggulan <span class="text-red-500">*</span></label>
+              <input type="text" id="keu-title" required class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold bg-white">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Ikon (Emoji)</label>
+                <input type="text" id="keu-icon" placeholder="Contoh: 🌟" class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold bg-white">
+              </div>
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Label Pendek</label>
+                <input type="text" id="keu-badge" placeholder="Contoh: SDM Unggul" class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold bg-white">
+              </div>
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Urutan Tampil</label>
+                <input type="number" id="keu-order" value="1" min="1" class="w-28 rounded-xl border-2 border-slate-300 px-3.5 py-2 font-bold bg-white">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-extrabold text-slate-800 mb-1">Deskripsi</label>
+              <textarea id="keu-desc" rows="4" placeholder="Deskripsi keunggulan" class="w-full rounded-2xl border-2 border-slate-300 p-4 text-base bg-white leading-relaxed"></textarea>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 pt-5 border-t border-lime-200">
+              <button type="button" id="btn-keu-delete" onclick="deleteCurrentKeunggulan()" class="hidden rounded-2xl bg-red-100 hover:bg-red-200 text-red-700 px-5 py-3 text-sm font-bold cursor-pointer">
+                Hapus Keunggulan
+              </button>
+              <div class="flex items-center gap-3 ml-auto">
+                <button type="button" onclick="closeKeunggulanEditor()" class="rounded-2xl border-2 border-slate-300 bg-white hover:bg-slate-100 px-6 py-3 text-sm font-bold text-slate-700 cursor-pointer">
+                  Batal
+                </button>
+                <button type="submit" class="rounded-2xl bg-lime-700 hover:bg-lime-800 text-white px-8 py-3.5 text-base font-black shadow-xl cursor-pointer">
+                  Simpan Keunggulan
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="mt-6">
+          <div id="keunggulan-cards-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Diisi lewat JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB STATISTIK                                                 -->
+    <!-- ============================================================ -->
+    <div id="view-statistik" class="tab-view hidden container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
+      <div class="rounded-3xl bg-white p-6 sm:p-8 shadow-sm border border-slate-200">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200">
+          <div>
+            <div class="inline-flex items-center gap-1.5 rounded-full bg-cyan-100 text-cyan-900 px-3 py-1 text-xs font-black uppercase">
+              Statistik
+            </div>
+            <h3 class="text-2xl font-black text-dark-blue mt-1">Angka Statistik Beranda</h3>
+            <p class="text-slate-500 text-sm mt-0.5">Kelola angka yang tampil di banner beranda (Siswa Aktif, Akreditasi, dan lainnya).</p>
+          </div>
+          <button onclick="startEditStatistik('new')" class="rounded-2xl bg-cyan-700 hover:bg-cyan-800 text-white font-extrabold text-base px-6 py-3.5 shadow-lg flex items-center gap-2 transition hover:scale-105 cursor-pointer">
+            <span>Tambah Angka</span>
+          </button>
+        </div>
+
+        <div id="statistik-editor-box" class="hidden my-8 rounded-3xl bg-cyan-50/60 border-3 border-cyan-600 p-6 sm:p-8 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-cyan-200 mb-6">
+            <div class="flex items-center gap-3">
+              <div>
+                <h4 id="statistik-form-title" class="text-xl font-black text-cyan-950">Formulir Statistik</h4>
+                <p class="text-xs sm:text-sm font-semibold text-cyan-800">Ubah isi angka dan label, lalu klik Simpan.</p>
+              </div>
+            </div>
+            <button onclick="closeStatistikEditor()" class="rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 px-4 py-2 font-bold text-sm cursor-pointer">
+              Tutup
+            </button>
+          </div>
+
+          <form id="statistik-form" class="space-y-5" onsubmit="event.preventDefault(); saveStatistik();">
+            <input type="hidden" id="stt-slug" value="">
+            <input type="hidden" id="stt-sha" value="">
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Angka <span class="text-red-500">*</span></label>
+                <input type="text" id="stt-value" required placeholder="Contoh: 185" class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold bg-white">
+              </div>
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Label <span class="text-red-500">*</span></label>
+                <input type="text" id="stt-label" required placeholder="Contoh: Siswa Aktif" class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold bg-white">
+              </div>
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Urutan Tampil</label>
+                <input type="number" id="stt-order" value="1" min="1" class="w-28 rounded-xl border-2 border-slate-300 px-3.5 py-2 font-bold bg-white">
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 pt-5 border-t border-cyan-200">
+              <button type="button" id="btn-stt-delete" onclick="deleteCurrentStatistik()" class="hidden rounded-2xl bg-red-100 hover:bg-red-200 text-red-700 px-5 py-3 text-sm font-bold cursor-pointer">
+                Hapus Angka
+              </button>
+              <div class="flex items-center gap-3 ml-auto">
+                <button type="button" onclick="closeStatistikEditor()" class="rounded-2xl border-2 border-slate-300 bg-white hover:bg-slate-100 px-6 py-3 text-sm font-bold text-slate-700 cursor-pointer">
+                  Batal
+                </button>
+                <button type="submit" class="rounded-2xl bg-cyan-700 hover:bg-cyan-800 text-white px-8 py-3.5 text-base font-black shadow-xl cursor-pointer">
+                  Simpan Statistik
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="mt-6">
+          <div id="statistik-cards-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <!-- Diisi lewat JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 6: KURIKULUM                                              -->
+    <!-- ============================================================ -->
+    <div id="view-kurikulum" class="tab-view hidden container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
+      <div class="rounded-3xl bg-white p-6 sm:p-8 shadow-sm border border-slate-200">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200">
+          <div>
+            <div class="inline-flex items-center gap-1.5 rounded-full bg-teal-100 text-teal-900 px-3 py-1 text-xs font-black uppercase">
+              Kurikulum
+            </div>
+            <h3 class="text-2xl font-black text-dark-blue mt-1">Halaman Dokumen Kurikulum</h3>
+            <p class="text-slate-500 text-sm mt-0.5">Kelola dokumen dan bab materi kurikulum.</p>
+          </div>
+          <button onclick="startEditKurikulum('new')" class="rounded-2xl bg-teal-700 hover:bg-teal-800 text-white font-extrabold text-base px-6 py-3.5 shadow-lg flex items-center gap-2 transition hover:scale-105 cursor-pointer">
+            <span>Tambah Dokumen</span>
+          </button>
+        </div>
+
+        <!-- Formulir Kurikulum -->
+        <div id="kurikulum-editor-box" class="hidden my-8 rounded-3xl bg-teal-50/60 border-3 border-teal-600 p-6 sm:p-8 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-teal-200 mb-6">
+            <div class="flex items-center gap-3">
+              <div>
+                <h4 id="kurikulum-form-title" class="text-xl font-black text-teal-950">Formulir Kurikulum</h4>
+                <p class="text-xs sm:text-sm font-semibold text-teal-800">Ubah isi tulisan, lalu klik Simpan.</p>
+              </div>
+            </div>
+            <button onclick="closeKurikulumEditor()" class="rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 px-4 py-2 font-bold text-sm cursor-pointer">
+              Tutup
+            </button>
+          </div>
+
+          <form id="kurikulum-form" class="space-y-5" onsubmit="event.preventDefault(); saveKurikulum();">
+            <input type="hidden" id="kur-slug" value="">
+            <input type="hidden" id="kur-sha" value="">
+
+            <div>
+              <label class="block text-sm font-extrabold text-slate-800 mb-1">Judul Dokumen <span class="text-red-500">*</span></label>
+              <input type="text" id="kur-title" required class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold bg-white">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Bab</label>
+                <input type="text" id="kur-bab" placeholder="Contoh: Bab 1 Pendahuluan" class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold bg-white">
+              </div>
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Urutan Tampil</label>
+                <input type="number" id="kur-order" value="1" min="1" class="w-28 rounded-xl border-2 border-slate-300 px-3.5 py-2 font-bold bg-white">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-extrabold text-slate-800 mb-1">Isi Dokumen</label>
+              <textarea id="kur-body" rows="12" required placeholder="Tuliskan isi dokumen" class="w-full rounded-2xl border-2 border-slate-300 p-4 text-base bg-white leading-relaxed font-sans"></textarea>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 pt-5 border-t border-teal-200">
+              <button type="button" id="btn-kur-delete" onclick="deleteCurrentKurikulum()" class="hidden rounded-2xl bg-red-100 hover:bg-red-200 text-red-700 px-5 py-3 text-sm font-bold cursor-pointer">
+                Hapus Dokumen
+              </button>
+              <div class="flex items-center gap-3 ml-auto">
+                <button type="button" onclick="closeKurikulumEditor()" class="rounded-2xl border-2 border-slate-300 bg-white hover:bg-slate-100 px-6 py-3 text-sm font-bold text-slate-700 cursor-pointer">
+                  Batal
+                </button>
+                <button type="submit" class="rounded-2xl bg-teal-700 hover:bg-teal-800 text-white px-8 py-3.5 text-base font-black shadow-xl cursor-pointer">
+                  Simpan Dokumen
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Daftar Dokumen -->
+        <div class="mt-6">
+          <div id="kurikulum-cards-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Diisi lewat JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 9: GURU & STAF                                            -->
+    <!-- ============================================================ -->
+    <div id="view-guru-staf" class="tab-view hidden container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
+      <div class="rounded-3xl bg-white p-6 sm:p-8 shadow-sm border border-slate-200">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200">
+          <div>
+            <div class="inline-flex items-center gap-1.5 rounded-full bg-violet-100 text-violet-900 px-3 py-1 text-xs font-black uppercase">
+              Guru &amp; Staf
+            </div>
+            <h3 class="text-2xl font-black text-dark-blue mt-1">Kelola Guru &amp; Tenaga Kependidikan</h3>
+            <p class="text-slate-500 text-sm mt-0.5">Atur nama, jabatan, dan foto pada halaman Guru &amp; Staf. Foto tanpa pilihan = kartu inisial.</p>
+          </div>
+          <button onclick="startEditGuru('new')" class="rounded-2xl bg-violet-700 hover:bg-violet-800 text-white font-extrabold text-base px-6 py-3.5 shadow-lg flex items-center gap-2 transition hover:scale-105 cursor-pointer">
+            <span>Tambah Anggota</span>
+          </button>
+        </div>
+
+        <div id="guru-editor-box" class="hidden my-8 rounded-3xl bg-violet-50/60 border-3 border-violet-600 p-6 sm:p-8 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-violet-200 mb-6">
+            <div class="flex items-center gap-3">
+              <div>
+                <h4 id="guru-form-title" class="text-xl font-black text-violet-950">Formulir Guru &amp; Staf</h4>
+                <p class="text-xs sm:text-sm font-semibold text-violet-800">Lengkapi data, pilih foto atau unggah baru, lalu simpan.</p>
+              </div>
+            </div>
+            <button onclick="closeGuruEditor()" class="rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 px-4 py-2 font-bold text-sm cursor-pointer">
+              Tutup
+            </button>
+          </div>
+
+          <form id="guru-form" class="space-y-5" onsubmit="event.preventDefault(); saveGuru();">
+            <input type="hidden" id="gs-slug" value="">
+            <input type="hidden" id="gs-sha" value="">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
+                <input type="text" id="gs-nama" required placeholder="Contoh: Hartati, S.Pd.I., M.Pd." class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold bg-white">
+              </div>
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Jabatan</label>
+                <input type="text" id="gs-jabatan" placeholder="Contoh: Kepala Madrasah / Tata Usaha" class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold bg-white">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Kelompok <span class="text-red-500">*</span></label>
+                <select id="gs-grup" class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold bg-white">
+                  <option value="pendidik">Pendidik (Guru)</option>
+                  <option value="tendik">Tendik (Tata Usaha)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Urutan Tampil</label>
+                <input type="number" id="gs-order" value="1" min="1" class="w-28 rounded-xl border-2 border-slate-300 px-3.5 py-2 font-bold bg-white">
+              </div>
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Foto</label>
+                <select id="gs-foto" class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold bg-white">
+                  <option value="">— Tanpa Foto (Kartu Inisial) —</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4 pt-5 border-t border-violet-200">
+              <div class="flex items-center gap-3">
+                <div class="size-32 overflow-hidden rounded-2xl border-2 border-slate-200 bg-slate-100">
+                  <img id="guru-foto-preview" class="size-full object-cover hidden" alt="Pratinjau foto">
+                </div>
+                <div>
+                  <label class="block text-sm font-extrabold text-slate-800 mb-1">Unggah Foto Baru</label>
+                  <input type="file" id="guru-foto-file" accept="image/*" onchange="uploadGuruFoto(event)" class="block w-full text-sm text-slate-600 file:mr-3 file:rounded-xl file:border-0 file:bg-violet-600 file:px-4 file:py-2 file:text-white file:font-bold file:cursor-pointer">
+                  <p id="guru-foto-status" class="mt-1 text-xs font-semibold text-slate-500"></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 pt-5 border-t border-violet-200">
+              <button type="button" id="btn-gs-delete" onclick="deleteCurrentGuru()" class="hidden rounded-2xl bg-red-100 hover:bg-red-200 text-red-700 px-5 py-3 text-sm font-bold cursor-pointer">
+                Hapus Anggota
+              </button>
+              <div class="flex items-center gap-3 ml-auto">
+                <button type="button" onclick="closeGuruEditor()" class="rounded-2xl border-2 border-slate-300 bg-white hover:bg-slate-100 px-6 py-3 text-sm font-bold text-slate-700 cursor-pointer">
+                  Batal
+                </button>
+                <button type="submit" class="rounded-2xl bg-violet-700 hover:bg-violet-800 text-white px-8 py-3.5 text-base font-black shadow-xl cursor-pointer">
+                  Simpan Anggota
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="mt-6">
+          <div id="guru-cards-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            <!-- Diisi lewat JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== VIEW TESTIMONIAL ========== -->
+    <div id="view-testimonial" class="tab-view hidden container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
+      <div class="bg-white rounded-3xl shadow-lg border border-slate-200 p-6 sm:p-10">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <h2 class="text-2xl font-extrabold text-slate-800">📝 Kelola Testimonial</h2>
+          <button onclick="startEditTestimonial('new')" class="bg-hijau-700 hover:bg-hijau-800 text-white font-bold py-3 px-6 rounded-xl transition">+ Tambah</button>
+        </div>
+
+        <div id="testimonial-editor-box" class="hidden mb-8 p-6 bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl">
+          <h3 id="testimonial-form-title" class="text-lg font-extrabold text-slate-800 mb-4">Tambah Testimonial</h3>
+          <input type="hidden" id="tst-slug" />
+          <input type="hidden" id="tst-sha" />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">Nama</label>
+              <input id="tst-name" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="Nama lengkap" />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">Peran</label>
+              <input id="tst-role" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="Wali Murid / Alumni" />
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-bold text-slate-600 mb-1">Testimonial</label>
+            <textarea id="tst-text" rows="3" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="Isi testimoni..."></textarea>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">Avatar (emoji)</label>
+              <input id="tst-avatar" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="👩‍🏫" />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">Rating (1-5)</label>
+              <input id="tst-rating" type="number" min="1" max="5" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" value="5" />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">Urutan</label>
+              <input id="tst-order" type="number" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" value="1" />
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <button onclick="saveTestimonial()" class="bg-hijau-700 hover:bg-hijau-800 text-white font-bold py-2 px-6 rounded-xl transition">Simpan</button>
+            <button onclick="closeTestimonialEditor()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-6 rounded-xl transition">Batal</button>
+            <button id="btn-tst-delete" onclick="confirmDeleteTestimonial()" class="hidden ml-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-xl transition">Hapus</button>
+          </div>
+        </div>
+
+        <div id="testimonial-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Diisi lewat JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== VIEW APLIKASI LAYANAN ========== -->
+    <div id="view-aplikasi" class="tab-view hidden container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
+      <div class="bg-white rounded-3xl shadow-lg border border-slate-200 p-6 sm:p-10">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <h2 class="text-2xl font-extrabold text-slate-800">🔗 Kelola Aplikasi Layanan</h2>
+          <button onclick="startEditAplikasi('new')" class="bg-hijau-700 hover:bg-hijau-800 text-white font-bold py-3 px-6 rounded-xl transition">+ Tambah</button>
+        </div>
+
+        <div id="aplikasi-editor-box" class="hidden mb-8 p-6 bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl">
+          <h3 id="aplikasi-form-title" class="text-lg font-extrabold text-slate-800 mb-4">Tambah Aplikasi</h3>
+          <input type="hidden" id="app-slug" />
+          <input type="hidden" id="app-sha" />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">Nama Singkat</label>
+              <input id="app-name" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="RDM Kemenag" />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">Nama Lengkap</label>
+              <input id="app-fullname" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="Rapor Digital Madrasah" />
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">URL</label>
+              <input id="app-url" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="https://..." />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">Deskripsi</label>
+              <input id="app-desc" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="Deskripsi singkat" />
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">Icon (emoji)</label>
+              <input id="app-icon" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="📊" />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">Badge</label>
+              <input id="app-badge" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="Akademik" />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">Urutan</label>
+              <input id="app-order" type="number" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" value="1" />
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <button onclick="saveAplikasi()" class="bg-hijau-700 hover:bg-hijau-800 text-white font-bold py-2 px-6 rounded-xl transition">Simpan</button>
+            <button onclick="closeAplikasiEditor()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-6 rounded-xl transition">Batal</button>
+            <button id="btn-app-delete" onclick="confirmDeleteAplikasi()" class="hidden ml-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-xl transition">Hapus</button>
+          </div>
+        </div>
+
+        <div id="aplikasi-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Diisi lewat JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== VIEW PROFIL SINGKAT ========== -->
+    <div id="view-profil-singkat" class="tab-view hidden container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
+      <div class="bg-white rounded-3xl shadow-lg border border-slate-200 p-6 sm:p-10">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <h2 class="text-2xl font-extrabold text-slate-800">🏫 Profil Singkat (Beranda)</h2>
+          <button onclick="loadProfilSingkat()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-xl transition">↻ Muat Ulang</button>
+        </div>
+
+        <input type="hidden" id="ps-sha" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-sm font-bold text-slate-600 mb-1">Judul</label>
+            <input id="ps-judul" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="MIN 2 Kulon Progo Yogyakarta" />
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-slate-600 mb-1">Subjudul / Label</label>
+            <input id="ps-subjudul" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="Selayang Pandang" />
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-bold text-slate-600 mb-1">Deskripsi Paragraf 1</label>
+          <textarea id="ps-desk1" rows="3" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none"></textarea>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-bold text-slate-600 mb-1">Deskripsi Paragraf 2</label>
+          <textarea id="ps-desk2" rows="3" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none"></textarea>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label class="block text-sm font-bold text-slate-600 mb-1">Foto (path)</label>
+            <input id="ps-foto" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="/images/qngqw.jpg" />
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-slate-600 mb-1">Tahun Berdiri</label>
+            <input id="ps-tahun" type="number" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" />
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-slate-600 mb-1">Akreditasi</label>
+            <input id="ps-akreditasi" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="A (Unggul) BAN-S/M" />
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label class="block text-sm font-bold text-slate-600 mb-1">NPSN</label>
+            <input id="ps-npsn" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" />
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-slate-600 mb-1">NSM</label>
+            <input id="ps-nsm" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" />
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-slate-600 mb-1">Lokasi</label>
+            <input id="ps-lokasi" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="Wates, Kulon Progo, DIY" />
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-sm font-bold text-slate-600 mb-1">Tagline</label>
+            <input id="ps-tagline" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="Madrasah Hebat Bermartabat" />
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-slate-600 mb-1">Sub-tagline</label>
+            <input id="ps-taglinesub" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" />
+          </div>
+        </div>
+
+        <h3 class="text-lg font-extrabold text-slate-700 mt-6 mb-3">Badge / Unggulan (maks 4)</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+          <div class="p-3 bg-slate-50 rounded-xl border">
+            <label class="block text-xs font-bold text-slate-500 mb-1">Icon 1</label>
+            <input id="ps-b1icon" class="w-full border rounded-lg px-3 py-1 text-sm" placeholder="🌿" />
+            <label class="block text-xs font-bold text-slate-500 mb-1 mt-2">Judul 1</label>
+            <input id="ps-b1title" class="w-full border rounded-lg px-3 py-1 text-sm" />
+            <label class="block text-xs font-bold text-slate-500 mb-1 mt-2">Keterangan 1</label>
+            <input id="ps-b1desc" class="w-full border rounded-lg px-3 py-1 text-sm" />
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border">
+            <label class="block text-xs font-bold text-slate-500 mb-1">Icon 2</label>
+            <input id="ps-b2icon" class="w-full border rounded-lg px-3 py-1 text-sm" placeholder="📖" />
+            <label class="block text-xs font-bold text-slate-500 mb-1 mt-2">Judul 2</label>
+            <input id="ps-b2title" class="w-full border rounded-lg px-3 py-1 text-sm" />
+            <label class="block text-xs font-bold text-slate-500 mb-1 mt-2">Keterangan 2</label>
+            <input id="ps-b2desc" class="w-full border rounded-lg px-3 py-1 text-sm" />
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border">
+            <label class="block text-xs font-bold text-slate-500 mb-1">Icon 3</label>
+            <input id="ps-b3icon" class="w-full border rounded-lg px-3 py-1 text-sm" placeholder="🏆" />
+            <label class="block text-xs font-bold text-slate-500 mb-1 mt-2">Judul 3</label>
+            <input id="ps-b3title" class="w-full border rounded-lg px-3 py-1 text-sm" />
+            <label class="block text-xs font-bold text-slate-500 mb-1 mt-2">Keterangan 3</label>
+            <input id="ps-b3desc" class="w-full border rounded-lg px-3 py-1 text-sm" />
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border">
+            <label class="block text-xs font-bold text-slate-500 mb-1">Icon 4</label>
+            <input id="ps-b4icon" class="w-full border rounded-lg px-3 py-1 text-sm" placeholder="🛡️" />
+            <label class="block text-xs font-bold text-slate-500 mb-1 mt-2">Judul 4</label>
+            <input id="ps-b4title" class="w-full border rounded-lg px-3 py-1 text-sm" />
+            <label class="block text-xs font-bold text-slate-500 mb-1 mt-2">Keterangan 4</label>
+            <input id="ps-b4desc" class="w-full border rounded-lg px-3 py-1 text-sm" />
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <button onclick="saveProfilSingkat()" class="bg-hijau-700 hover:bg-hijau-800 text-white font-bold py-3 px-8 rounded-xl transition">Simpan Profil Singkat</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- 4. JAVASCRIPT: LOGIKA DATA & GITHUB API            -->
+  <!-- ============================================================ -->
+  <script>
+    const USER_KEY = 'decap-cms-user';
+    const GITHUB_REPO = 'smmin2kp-it/min2kulonprogo';
+    let currentToken = '';
+
+    // Data Default Langsung Tersedia (Tidak Kosong Saat Pertama Buka)
+    let carouselItems = [
+      {
+        slug: '01-selamat-datang',
+        sha: '',
+        meta: {
+          badge: 'Madrasah Ibtidaiyah Negeri Unggulan di Wates',
+          subtitle: 'Selamat Datang di',
+          title: 'MIN 2 Kulon Progo',
+          description: 'Membentuk Generasi Beriman, Cerdas, Berkarakter, dan Berwawasan Lingkungan di tepi barat Sungai Serang.',
+          image: '/images/qngqw.jpg',
+          buttonPrimaryText: 'Pelajari Selengkapnya',
+          buttonPrimaryLink: '/profil',
+          buttonSecondaryText: 'Kurikulum 2026/2027',
+          buttonSecondaryLink: '/kurikulum',
+          order: 1
+        }
+      },
+      {
+        slug: '02-tahfidz-adab',
+        sha: '',
+        meta: {
+          badge: 'Program Unggulan Berkelanjutan',
+          subtitle: 'Tahfidz & Pembiasaan Adab',
+          title: "Generasi Qur'ani & Berakhlak",
+          description: 'Pembiasaan Sholat Dhuha, Sholat Dzuhur berjamaah, hafalan Juz 30, dan penguatan nilai-nilai moderasi beragama sejak dini.',
+          image: '/images/galeri/sehari-adab-tahfidz-1.svg',
+          buttonPrimaryText: 'Program Unggulan',
+          buttonPrimaryLink: '/program-keunggulan',
+          buttonSecondaryText: 'Galeri Kegiatan',
+          buttonSecondaryLink: '/galeri',
+          order: 2
+        }
+      },
+      {
+        slug: '03-adiwiyata',
+        sha: '',
+        meta: {
+          badge: 'Madrasah Adiwiyata & Ramah Anak',
+          subtitle: 'Lingkungan Nyaman & Asri',
+          title: 'Pendidikan Ramah Anak',
+          description: 'Menciptakan ruang belajar yang inklusif, bebas perundungan, berbudaya lingkungan hidup, dan tangguh bencana.',
+          image: '/images/galeri/kegiatan-adiwiyata-1.svg',
+          buttonPrimaryText: 'Visi & Misi Kami',
+          buttonPrimaryLink: '/visi-misi',
+          buttonSecondaryText: 'Hubungi Madrasah',
+          buttonSecondaryLink: '/kontak',
+          order: 3
+        }
+      }
+    ];
+
+    let beritaItems = [];
+    let galeriItems = [];
+    let faqItems = [];
+    let halamanItems = [];
+    let kurikulumItems = [];
+    let keunggulanItems = [];
+    let statistikItems = [];
+    let guruItems = [];
+    let guruFotoList = [];
+    let testimonialItems = [];
+    let aplikasiItems = [];
+
+    // --- TAB SWITCHER ---
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-view').forEach(v => v.classList.add('hidden'));
+
+      const activeBtn = document.getElementById(`tab-${tabName}`);
+      const activeView = document.getElementById(`view-${tabName}`);
+
+      if (activeBtn) activeBtn.classList.add('active');
+      if (activeView) activeView.classList.remove('hidden');
+    }
+
+    // --- ALERT SYSTEM ---
+    function showAlert(msg, isSuccess = true) {
+      const box = document.getElementById('global-alert');
+      box.className = `rounded-2xl p-4 text-base font-bold shadow-md ${isSuccess ? 'bg-emerald-100 text-emerald-900 border-2 border-emerald-400' : 'bg-red-100 text-red-900 border-2 border-red-400'}`;
+      box.innerHTML = msg;
+      box.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => { box.classList.add('hidden'); }, 6000);
+    }
+
+    // --- AUTHENTICATION ---
+    function initAuth() {
+      const stored = localStorage.getItem(USER_KEY);
+      if (stored) {
+        try {
+          const user = JSON.parse(stored);
+          if (user && user.token) {
+            currentToken = user.token;
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('admin-bar').classList.remove('hidden');
+            document.getElementById('admin-main').classList.remove('hidden');
+            loadAllData();
+            return;
+          }
+        } catch (e) {
+          localStorage.removeItem(USER_KEY);
+        }
+      }
+      document.getElementById('login-view').classList.remove('hidden');
+      document.getElementById('admin-bar').classList.add('hidden');
+      document.getElementById('admin-main').classList.add('hidden');
+    }
+
+    document.getElementById('form-login').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-login-submit');
+      const errBox = document.getElementById('login-err');
+      btn.disabled = true;
+      btn.textContent = 'Memverifikasi...';
+      errBox.classList.add('hidden');
+
+      const formData = new FormData(e.target);
+
+      try {
+        const res = await fetch('/api/login', { method: 'POST', body: formData });
+        const data = await res.json();
+
+        if (res.ok && data.token) {
+          currentToken = data.token;
+          localStorage.setItem(USER_KEY, JSON.stringify({
+            token: data.token,
+            backendName: 'github',
+            login: formData.get('username') || 'admin'
+          }));
+          document.getElementById('login-view').classList.add('hidden');
+          document.getElementById('admin-bar').classList.remove('hidden');
+          document.getElementById('admin-main').classList.remove('hidden');
+          loadAllData();
+        } else {
+          errBox.textContent = data.message || 'Username atau password salah.';
+          errBox.classList.remove('hidden');
+        }
+      } catch (err) {
+        errBox.textContent = 'Gagal terhubung ke server.';
+        errBox.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Masuk';
+      }
+    });
+
+    function logoutAdmin() {
+      if (confirm('Keluar dari panel pengelola?')) {
+        localStorage.removeItem(USER_KEY);
+        sessionStorage.clear();
+        window.location.href = '/';
+      }
+    }
+
+    // --- GITHUB API HELPER ---
+    async function ghFetch(path, options = {}) {
+      const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`;
+      return await fetch(url, {
+        ...options,
+        headers: {
+          'Authorization': `token ${currentToken}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'User-Agent': 'MIN2KP-VisualAdmin',
+          ...(options.headers || {})
+        }
+      });
+    }
+
+    // Ambil sha terbaru sebuah berkas. Wajib sebelum menulis ulang,
+    // kalau tidak GitHub menolak dengan 409 (konflik).
+    async function ghSha(path) {
+      try {
+        const res = await ghFetch(path);
+        if (!res.ok) return '';
+        const data = await res.json();
+        return data.sha || '';
+      } catch (e) { return ''; }
+    }
+
+    // Tulis berkas markdown. Melempar Error jika gagal, mengembalikan sha baru jika sukses.
+    async function ghSave(path, markdown, message) {
+      if (!currentToken) throw new Error('Anda belum masuk. Silakan masuk kembali.');
+      const sha = await ghSha(path);
+      const res = await ghFetch(path, {
+        method: 'PUT',
+        body: JSON.stringify({
+          message,
+          content: btoa(unescape(encodeURIComponent(markdown))),
+          ...(sha ? { sha } : {})
+        })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || `Gagal menyimpan (kode ${res.status}).`);
+      }
+      const data = await res.json();
+      return data.content && data.content.sha ? data.content.sha : '';
+    }
+
+    // Hapus berkas. Melempar Error jika gagal.
+    async function ghDelete(path, message) {
+      if (!currentToken) throw new Error('Anda belum masuk. Silakan masuk kembali.');
+      const sha = await ghSha(path);
+      if (!sha) throw new Error('Berkas tidak ditemukan di server.');
+      const res = await ghFetch(path, {
+        method: 'DELETE',
+        body: JSON.stringify({ message, sha })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || `Gagal menghapus (kode ${res.status}).`);
+      }
+    }
+
+    // Ubah judul menjadi nama berkas yang aman.
+    function slugify(text) {
+      return String(text).toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 40) || 'tanpa-judul';
+    }
+
+    // --- LOAD ALL DATA ---
+    async function loadAllData() {
+      renderCarouselCards();
+      fetchRemoteCarousel();
+      fetchRemoteBerita();
+      fetchRemoteGaleri();
+      fetchRemoteFaq();
+      fetchRemoteHalaman();
+      fetchRemoteKurikulum();
+      fetchRemoteKeunggulan();
+      fetchRemoteStatistik();
+      fetchRemoteGuru();
+      fetchRemoteTestimonial();
+      fetchRemoteAplikasi();
+      loadProfilSingkat();
+    }
+
+    // ============================================================
+    // 1. BANNER
+    // ============================================================
+    function renderCarouselCards() {
+      const container = document.getElementById('carousel-cards-list');
+      if (!container) return;
+
+      if (carouselItems.length === 0) {
+        container.innerHTML = '<div class="col-span-full py-10 text-center text-slate-400 font-bold">Belum ada banner. Gunakan tombol Tambah Banner di atas.</div>';
+        return;
+      }
+
+      carouselItems.sort((a, b) => (a.meta.order || 0) - (b.meta.order || 0));
+
+      container.innerHTML = carouselItems.map((item, idx) => `
+        <div class="rounded-3xl bg-white border-3 border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between hover:border-emerald-600 transition duration-300">
+          <div>
+            <!-- Banner Image Preview -->
+            <div class="aspect-16/9 w-full bg-slate-900 relative overflow-hidden">
+              <img src="${item.meta.image || '/images/qngqw.jpg'}" alt="${escapeHtml(item.meta.title)}" class="size-full object-cover" onerror="this.src='/images/qngqw.jpg'">
+              <div class="absolute inset-0 bg-gradient-to-t from-dark-blue/90 via-dark-blue/30 to-transparent"></div>
+              <span class="absolute top-3 left-3 rounded-full bg-kuning-400 text-dark-blue font-black text-xs px-3 py-1 shadow">
+                Urutan ${item.meta.order || idx + 1}
+              </span>
+              <div class="absolute bottom-3 left-3 right-3 text-white">
+                <p class="text-xs text-emerald-300 font-bold">${escapeHtml(item.meta.badge || '')}</p>
+                <h5 class="text-base font-black leading-tight">${escapeHtml(item.meta.title)}</h5>
+              </div>
+            </div>
+
+            <!-- Content Details -->
+            <div class="p-5 space-y-2">
+              <div>
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 block">Sub-Judul</span>
+                <p class="text-sm font-bold text-slate-800">${escapeHtml(item.meta.subtitle || '-')}</p>
+              </div>
+              <div>
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 block">Deskripsi Singkat</span>
+                <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">${escapeHtml(item.meta.description || '-')}</p>
+              </div>
+              <div class="pt-2 flex flex-wrap gap-2 text-xs">
+                ${item.meta.buttonPrimaryText ? `<span class="bg-amber-100 text-amber-900 font-bold px-2.5 py-1 rounded-lg">${escapeHtml(item.meta.buttonPrimaryText)}</span>` : ''}
+                ${item.meta.buttonSecondaryText ? `<span class="bg-slate-100 text-slate-700 font-bold px-2.5 py-1 rounded-lg">${escapeHtml(item.meta.buttonSecondaryText)}</span>` : ''}
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
+            <button onclick="startEditCarousel('${item.slug}')" class="flex-1 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-sm py-3 px-4 flex items-center justify-center gap-2 transition cursor-pointer shadow">
+              <span>Ubah</span>
+            </button>
+            <button onclick="confirmDeleteCarousel('${item.slug}')" class="rounded-xl bg-red-100 hover:bg-red-200 text-red-700 text-sm font-bold p-3 transition cursor-pointer" title="Hapus banner">
+              <span>Hapus</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function fetchRemoteCarousel() {
+      try {
+        const res = await ghFetch('src/content/carousel');
+        if (!res.ok) return;
+        const files = await res.json();
+        const items = [];
+        for (const file of files) {
+          if (!file.name.endsWith('.md')) continue;
+          const fileRes = await ghFetch(file.path);
+          const fileData = await fileRes.json();
+          const raw = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+          const { meta } = parseMarkdown(raw);
+          items.push({
+            slug: file.name.replace(/\.md$/, ''),
+            sha: fileData.sha,
+            meta: meta
+          });
+        }
+        if (items.length > 0) {
+          carouselItems = items;
+          renderCarouselCards();
+        }
+      } catch (e) {
+        console.log('Pakai data default carousel.');
+      }
+    }
+
+    function startEditCarousel(slug) {
+      const box = document.getElementById('carousel-editor-box');
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (slug === 'new') {
+        document.getElementById('carousel-form-title').textContent = 'Tambah Banner';
+        document.getElementById('car-slug').value = '';
+        document.getElementById('car-sha').value = '';
+        document.getElementById('car-title').value = '';
+        document.getElementById('car-subtitle').value = '';
+        document.getElementById('car-badge').value = '';
+        document.getElementById('car-description').value = '';
+        document.getElementById('car-image').value = '/images/qngqw.jpg';
+        document.getElementById('car-img-preview').src = '/images/qngqw.jpg';
+        document.getElementById('car-btn1-text').value = 'Pelajari Selengkapnya';
+        document.getElementById('car-btn1-link').value = '/profil';
+        document.getElementById('car-btn1-select').value = '/profil';
+        document.getElementById('car-btn2-text').value = '';
+        document.getElementById('car-btn2-link').value = '';
+        document.getElementById('car-btn2-select').value = '';
+        document.getElementById('car-order').value = carouselItems.length + 1;
+        document.getElementById('btn-car-delete').classList.add('hidden');
+      } else {
+        const item = carouselItems.find(x => x.slug === slug);
+        if (!item) return;
+        document.getElementById('carousel-form-title').textContent = `Ubah Banner: ${item.meta.title}`;
+        document.getElementById('car-slug').value = item.slug;
+        document.getElementById('car-sha').value = item.sha || '';
+        document.getElementById('car-title').value = item.meta.title || '';
+        document.getElementById('car-subtitle').value = item.meta.subtitle || '';
+        document.getElementById('car-badge').value = item.meta.badge || '';
+        document.getElementById('car-description').value = item.meta.description || '';
+        document.getElementById('car-image').value = item.meta.image || '/images/qngqw.jpg';
+        document.getElementById('car-img-preview').src = item.meta.image || '/images/qngqw.jpg';
+        document.getElementById('car-btn1-text').value = item.meta.buttonPrimaryText || '';
+        document.getElementById('car-btn1-link').value = item.meta.buttonPrimaryLink || '/profil';
+        document.getElementById('car-btn1-select').value = item.meta.buttonPrimaryLink || '/profil';
+        document.getElementById('car-btn2-text').value = item.meta.buttonSecondaryText || '';
+        document.getElementById('car-btn2-link').value = item.meta.buttonSecondaryLink || '';
+        document.getElementById('car-btn2-select').value = item.meta.buttonSecondaryLink || '';
+        document.getElementById('car-order').value = item.meta.order || 1;
+        document.getElementById('btn-car-delete').classList.remove('hidden');
+      }
+    }
+
+    function closeCarouselEditor() {
+      document.getElementById('carousel-editor-box').classList.add('hidden');
+    }
+
+    async function previewAndUploadCarouselImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const previewUrl = e.target.result;
+        document.getElementById('car-img-preview').src = previewUrl;
+
+        // Upload ke GitHub jika terhubung token
+        if (currentToken) {
+          showAlert('Mengunggah gambar...', true);
+          try {
+            const fileName = `banner-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+            const path = `public/images/${fileName}`;
+            const base64Content = previewUrl.split(',')[1];
+
+            const res = await ghFetch(path, {
+              method: 'PUT',
+              body: JSON.stringify({
+                message: `Upload banner foto: ${fileName}`,
+                content: base64Content
+              })
+            });
+
+            if (res.ok) {
+              const imagePath = `/images/${fileName}`;
+              document.getElementById('car-image').value = imagePath;
+              showAlert('Gambar berhasil diunggah.', true);
+            } else {
+              showAlert('Gagal mengunggah gambar ke server. Gambar dipakai sementara.', false);
+            }
+          } catch (err) {
+            showAlert('Terjadi kendala saat mengunggah gambar.', false);
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function saveCarousel() {
+      const btn = document.getElementById('btn-car-save');
+      btn.disabled = true;
+      btn.textContent = 'Menyimpan...';
+
+      let slug = document.getElementById('car-slug').value.trim();
+      const title = document.getElementById('car-title').value.trim();
+      const subtitle = document.getElementById('car-subtitle').value.trim();
+      const badge = document.getElementById('car-badge').value.trim();
+      const description = document.getElementById('car-description').value.trim();
+      const image = document.getElementById('car-image').value.trim() || '/images/qngqw.jpg';
+      const buttonPrimaryText = document.getElementById('car-btn1-text').value.trim();
+      const buttonPrimaryLink = document.getElementById('car-btn1-link').value.trim();
+      const buttonSecondaryText = document.getElementById('car-btn2-text').value.trim();
+      const buttonSecondaryLink = document.getElementById('car-btn2-link').value.trim();
+      const order = parseInt(document.getElementById('car-order').value || '1', 10);
+      const sha = document.getElementById('car-sha').value;
+
+      if (!slug) {
+        slug = `slide-${String(order).padStart(2, '0')}-${title.toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 20)}`;
+      }
+
+      const meta = {
+        badge, subtitle, title, description, image,
+        buttonPrimaryText, buttonPrimaryLink,
+        buttonSecondaryText, buttonSecondaryLink,
+        order
+      };
+
+      const markdownString = buildMarkdown(meta, '');
+
+      let newSha = sha;
+      try {
+        newSha = await ghSave(`src/content/carousel/${slug}.md`, markdownString, `Update banner: ${title}`);
+        showAlert('Banner berhasil disimpan dan dipublikasikan.', true);
+      } catch (e) {
+        showAlert(e.message, false);
+        btn.disabled = false;
+        btn.textContent = 'Simpan Banner';
+        return;
+      }
+
+      const existingIdx = carouselItems.findIndex(x => x.slug === slug);
+      if (existingIdx >= 0) {
+        carouselItems[existingIdx] = { slug, sha: newSha, meta };
+      } else {
+        carouselItems.push({ slug, sha: newSha, meta });
+      }
+
+      renderCarouselCards();
+      closeCarouselEditor();
+      btn.disabled = false;
+      btn.textContent = 'Simpan Banner';
+    }
+
+    async function confirmDeleteCarousel(slug) {
+      if (!confirm('Hapus banner ini? Tindakan ini tidak bisa dibatalkan.')) return;
+      try {
+        await ghDelete(`src/content/carousel/${slug}.md`, `Hapus banner: ${slug}`);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+      carouselItems = carouselItems.filter(x => x.slug !== slug);
+      renderCarouselCards();
+      showAlert('Banner telah dihapus.', true);
+    }
+
+    function deleteCurrentCarousel() {
+      const slug = document.getElementById('car-slug').value;
+      if (slug) {
+        confirmDeleteCarousel(slug);
+        closeCarouselEditor();
+      }
+    }
+
+    // ============================================================
+    // 2. BERITA
+    // ============================================================
+    async function fetchRemoteBerita() {
+      try {
+        const res = await ghFetch('src/content/berita');
+        if (!res.ok) return;
+        const files = await res.json();
+        beritaItems = [];
+        for (const file of files) {
+          if (!file.name.endsWith('.md')) continue;
+          const fileRes = await ghFetch(file.path);
+          const fileData = await fileRes.json();
+          const raw = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+          const { meta, body } = parseMarkdown(raw);
+          beritaItems.push({
+            slug: file.name.replace(/\.md$/, ''),
+            sha: fileData.sha,
+            meta,
+            body
+          });
+        }
+        renderBeritaCards();
+      } catch (e) {}
+    }
+
+    function renderBeritaCards() {
+      const container = document.getElementById('berita-cards-list');
+      if (!container) return;
+      if (beritaItems.length === 0) {
+        container.innerHTML = '<div class="col-span-full py-8 text-center text-slate-400 font-semibold">Belum ada postingan berita. Klik Tulis Berita Baru di atas.</div>';
+        return;
+      }
+      container.innerHTML = beritaItems.map(item => `
+        <div class="rounded-3xl bg-white border-2 border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between hover:border-emerald-600 transition">
+          <div>
+            <div class="aspect-16/10 bg-slate-100 overflow-hidden relative">
+              ${item.meta.cover ? `<img src="${item.meta.cover}" class="size-full object-cover" onerror="this.src='/images/galeri/kegiatan-adiwiyata-1.svg'">` : `<div class="size-full flex items-center justify-center bg-emerald-800 text-xs font-bold text-white">Tanpa Gambar</div>`}
+              <span class="absolute top-3 left-3 rounded-full bg-dark-blue text-white px-3 py-1 text-xs font-bold shadow">
+                ${item.meta.date ? String(item.meta.date).slice(0, 10) : 'Terkini'}
+              </span>
+            </div>
+            <div class="p-5">
+              <h5 class="font-extrabold text-slate-900 text-base leading-snug line-clamp-2">${escapeHtml(item.meta.title || item.slug)}</h5>
+              <p class="text-xs text-slate-500 mt-2 line-clamp-3 leading-relaxed">${escapeHtml(item.meta.excerpt || item.body.slice(0, 120))}</p>
+            </div>
+          </div>
+          <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
+            <button onclick="startEditBerita('${item.slug}')" class="flex-1 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-bold py-2.5 px-3 flex items-center justify-center gap-1.5 cursor-pointer">
+              <span>Ubah</span>
+            </button>
+            <button onclick="confirmDeleteBerita('${item.slug}')" class="rounded-xl bg-red-100 hover:bg-red-200 text-red-700 text-sm font-bold p-2.5 cursor-pointer">
+              <span>Hapus</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function startEditBerita(slug) {
+      const box = document.getElementById('berita-editor-box');
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+
+      if (slug === 'new') {
+        document.getElementById('berita-form-title').textContent = 'Tambah Berita';
+        document.getElementById('berita-slug').value = '';
+        document.getElementById('berita-sha').value = '';
+        document.getElementById('berita-title').value = '';
+        document.getElementById('berita-date').value = new Date().toISOString().slice(0, 10);
+        document.getElementById('berita-cover').value = '';
+        document.getElementById('berita-excerpt').value = '';
+        document.getElementById('berita-body').value = '';
+        document.getElementById('btn-berita-delete').classList.add('hidden');
+      } else {
+        const item = beritaItems.find(x => x.slug === slug);
+        if (!item) return;
+        document.getElementById('berita-form-title').textContent = `Ubah Berita: ${item.meta.title}`;
+        document.getElementById('berita-slug').value = item.slug;
+        document.getElementById('berita-sha').value = item.sha || '';
+        document.getElementById('berita-title').value = item.meta.title || '';
+        document.getElementById('berita-date').value = item.meta.date ? String(item.meta.date).slice(0, 10) : '';
+        document.getElementById('berita-cover').value = item.meta.cover || '';
+        document.getElementById('berita-excerpt').value = item.meta.excerpt || '';
+        document.getElementById('berita-body').value = item.body || '';
+        document.getElementById('btn-berita-delete').classList.remove('hidden');
+      }
+    }
+
+    function closeBeritaEditor() {
+      document.getElementById('berita-editor-box').classList.add('hidden');
+    }
+
+    async function saveBerita() {
+      let slug = document.getElementById('berita-slug').value.trim();
+      const title = document.getElementById('berita-title').value.trim();
+      const date = document.getElementById('berita-date').value.trim();
+      const cover = document.getElementById('berita-cover').value.trim();
+      const excerpt = document.getElementById('berita-excerpt').value.trim();
+      const body = document.getElementById('berita-body').value.trim();
+      const sha = document.getElementById('berita-sha').value;
+
+      if (!slug) slug = slugify(title);
+
+      const meta = { title, date, cover, excerpt };
+      const md = buildMarkdown(meta, body);
+
+      let newSha = sha;
+      try {
+        newSha = await ghSave(`src/content/berita/${slug}.md`, md, `Update berita: ${title}`);
+        showAlert('Berita berhasil disimpan.', true);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+
+      const idx = beritaItems.findIndex(x => x.slug === slug);
+      if (idx >= 0) {
+        beritaItems[idx] = { slug, sha: newSha, meta, body };
+      } else {
+        beritaItems.unshift({ slug, sha: newSha, meta, body });
+      }
+      renderBeritaCards();
+      closeBeritaEditor();
+    }
+
+    async function confirmDeleteBerita(slug) {
+      if (!confirm('Hapus berita ini? Tindakan ini tidak bisa dibatalkan.')) return;
+      try {
+        await ghDelete(`src/content/berita/${slug}.md`, `Hapus berita: ${slug}`);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+      beritaItems = beritaItems.filter(x => x.slug !== slug);
+      renderBeritaCards();
+      showAlert('Berita telah dihapus.', true);
+    }
+
+    function deleteCurrentBerita() {
+      const slug = document.getElementById('berita-slug').value;
+      if (slug) { confirmDeleteBerita(slug); closeBeritaEditor(); }
+    }
+
+    // ============================================================
+    // 3. GALERI
+    // ============================================================
+    async function fetchRemoteGaleri() {
+      try {
+        const res = await ghFetch('src/content/galeri');
+        if (!res.ok) return;
+        const files = await res.json();
+        galeriItems = [];
+        for (const file of files) {
+          if (!file.name.endsWith('.md')) continue;
+          const fileRes = await ghFetch(file.path);
+          const fileData = await fileRes.json();
+          const raw = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+          const { meta, body } = parseMarkdown(raw);
+          galeriItems.push({
+            slug: file.name.replace(/\.md$/, ''),
+            sha: fileData.sha,
+            meta,
+            body
+          });
+        }
+        renderGaleriCards();
+      } catch (e) {}
+    }
+
+    function renderGaleriCards() {
+      const container = document.getElementById('galeri-cards-list');
+      if (!container) return;
+      if (galeriItems.length === 0) {
+        container.innerHTML = '<div class="col-span-full py-8 text-center text-slate-400 font-semibold">Belum ada album galeri. Klik Tambah Album Galeri di atas.</div>';
+        return;
+      }
+      container.innerHTML = galeriItems.map(item => `
+        <div class="rounded-3xl bg-white border-2 border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between hover:border-blue-600 transition">
+          <div>
+            <div class="p-5">
+              <h5 class="font-extrabold text-slate-900 text-base leading-snug mt-2">${escapeHtml(item.meta.title || item.slug)}</h5>
+              <p class="text-xs text-slate-500 mt-1">${escapeHtml(item.meta.description || '')}</p>
+            </div>
+          </div>
+          <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
+            <button onclick="startEditGaleri('${item.slug}')" class="flex-1 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-sm font-bold py-2.5 px-3 flex items-center justify-center gap-1.5 cursor-pointer">
+              <span>Ubah</span>
+            </button>
+            <button onclick="confirmDeleteGaleri('${item.slug}')" class="rounded-xl bg-red-100 hover:bg-red-200 text-red-700 text-sm font-bold p-2.5 cursor-pointer">
+              <span>Hapus</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderGaleriThumbnails() {
+      const text = document.getElementById('galeri-photos-text').value;
+      const preview = document.getElementById('galeri-photos-preview');
+      if (!preview) return;
+      const urls = text.split('\n').map(u => u.trim()).filter(Boolean);
+      preview.innerHTML = urls.map(u => `
+        <div class="aspect-square rounded-xl bg-slate-100 overflow-hidden border border-slate-200 shadow-sm relative">
+          <img src="${u}" class="size-full object-cover" onerror="this.src='/images/qngqw.jpg'">
+        </div>
+      `).join('');
+    }
+
+    function startEditGaleri(slug) {
+      const box = document.getElementById('galeri-editor-box');
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+
+      if (slug === 'new') {
+        document.getElementById('galeri-form-title').textContent = 'Tambah Album';
+        document.getElementById('galeri-slug').value = '';
+        document.getElementById('galeri-sha').value = '';
+        document.getElementById('galeri-title').value = '';
+        document.getElementById('galeri-desc').value = '';
+        document.getElementById('galeri-photos-text').value = '';
+        document.getElementById('btn-galeri-delete').classList.add('hidden');
+        renderGaleriThumbnails();
+      } else {
+        const item = galeriItems.find(x => x.slug === slug);
+        if (!item) return;
+        document.getElementById('galeri-form-title').textContent = `Ubah Album: ${item.meta.title}`;
+        document.getElementById('galeri-slug').value = item.slug;
+        document.getElementById('galeri-sha').value = item.sha || '';
+        document.getElementById('galeri-title').value = item.meta.title || '';
+        document.getElementById('galeri-desc').value = item.meta.description || '';
+        document.getElementById('galeri-photos-text').value = Array.isArray(item.meta.photos) ? item.meta.photos.join('\n') : '';
+        document.getElementById('btn-galeri-delete').classList.remove('hidden');
+        renderGaleriThumbnails();
+      }
+    }
+
+    function closeGaleriEditor() {
+      document.getElementById('galeri-editor-box').classList.add('hidden');
+    }
+
+    async function saveGaleri() {
+      let slug = document.getElementById('galeri-slug').value.trim();
+      const title = document.getElementById('galeri-title').value.trim();
+      const description = document.getElementById('galeri-desc').value.trim();
+      const photosRaw = document.getElementById('galeri-photos-text').value.trim();
+      const sha = document.getElementById('galeri-sha').value;
+
+      if (!slug) slug = slugify(title);
+
+      const photos = photosRaw.split('\n').map(p => p.trim()).filter(Boolean);
+      const meta = { title, description, photos };
+      const md = buildMarkdown(meta, '');
+
+      let newSha = sha;
+      try {
+        newSha = await ghSave(`src/content/galeri/${slug}.md`, md, `Update galeri: ${title}`);
+        showAlert('Album berhasil disimpan.', true);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+
+      const idx = galeriItems.findIndex(x => x.slug === slug);
+      if (idx >= 0) {
+        galeriItems[idx] = { slug, sha: newSha, meta, body: '' };
+      } else {
+        galeriItems.push({ slug, sha: newSha, meta, body: '' });
+      }
+      renderGaleriCards();
+      closeGaleriEditor();
+    }
+
+    async function confirmDeleteGaleri(slug) {
+      if (!confirm('Hapus album ini? Tindakan ini tidak bisa dibatalkan.')) return;
+      try {
+        await ghDelete(`src/content/galeri/${slug}.md`, `Hapus galeri: ${slug}`);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+      galeriItems = galeriItems.filter(x => x.slug !== slug);
+      renderGaleriCards();
+      showAlert('Album telah dihapus.', true);
+    }
+
+    function deleteCurrentGaleri() {
+      const slug = document.getElementById('galeri-slug').value;
+      if (slug) { confirmDeleteGaleri(slug); closeGaleriEditor(); }
+    }
+
+    // ============================================================
+    // 4. TANYA JAWAB
+    // ============================================================
+    async function fetchRemoteFaq() {
+      try {
+        const res = await ghFetch('src/content/faq');
+        if (!res.ok) return;
+        const files = await res.json();
+        faqItems = [];
+        for (const file of files) {
+          if (!file.name.endsWith('.md')) continue;
+          const fileRes = await ghFetch(file.path);
+          const fileData = await fileRes.json();
+          const raw = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+          const { meta, body } = parseMarkdown(raw);
+          faqItems.push({
+            slug: file.name.replace(/\.md$/, ''),
+            sha: fileData.sha,
+            meta,
+            body
+          });
+        }
+        renderFaqCards();
+      } catch (e) {}
+    }
+
+    function renderFaqCards() {
+      const container = document.getElementById('faq-cards-list');
+      if (!container) return;
+      if (faqItems.length === 0) {
+        container.innerHTML = '<div class="py-8 text-center text-slate-400 font-semibold">Belum ada pertanyaan FAQ. Klik Tambah Pertanyaan Baru di atas.</div>';
+        return;
+      }
+      faqItems.sort((a, b) => (a.meta.order || 0) - (b.meta.order || 0));
+      container.innerHTML = faqItems.map(item => `
+        <div class="p-5 rounded-2xl bg-white border-2 border-slate-200 hover:border-amber-500 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex-1">
+            <span class="text-xs font-bold text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded-md">Urutan ${item.meta.order || 1}</span>
+            <h5 class="font-extrabold text-slate-900 text-base mt-1">${escapeHtml(item.meta.question || item.slug)}</h5>
+            <p class="text-xs text-slate-600 mt-1 line-clamp-2">${escapeHtml(item.body || '')}</p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="startEditFaq('${item.slug}')" class="rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs px-4 py-2.5 cursor-pointer">
+              Ubah
+            </button>
+            <button onclick="confirmDeleteFaq('${item.slug}')" class="rounded-xl bg-red-100 hover:bg-red-200 text-red-700 font-bold text-xs p-2.5 cursor-pointer">
+              Hapus
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function startEditFaq(slug) {
+      const box = document.getElementById('faq-editor-box');
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+
+      if (slug === 'new') {
+        document.getElementById('faq-form-title').textContent = 'Tambah Pertanyaan';
+        document.getElementById('faq-slug').value = '';
+        document.getElementById('faq-sha').value = '';
+        document.getElementById('faq-question').value = '';
+        document.getElementById('faq-body').value = '';
+        document.getElementById('faq-order').value = faqItems.length + 1;
+        document.getElementById('btn-faq-delete').classList.add('hidden');
+      } else {
+        const item = faqItems.find(x => x.slug === slug);
+        if (!item) return;
+        document.getElementById('faq-form-title').textContent = `Ubah Pertanyaan: ${item.meta.question}`;
+        document.getElementById('faq-slug').value = item.slug;
+        document.getElementById('faq-sha').value = item.sha || '';
+        document.getElementById('faq-question').value = item.meta.question || '';
+        document.getElementById('faq-body').value = item.body || '';
+        document.getElementById('faq-order').value = item.meta.order || 1;
+        document.getElementById('btn-faq-delete').classList.remove('hidden');
+      }
+    }
+
+    function closeFaqEditor() {
+      document.getElementById('faq-editor-box').classList.add('hidden');
+    }
+
+    async function saveFaq() {
+      let slug = document.getElementById('faq-slug').value.trim();
+      const question = document.getElementById('faq-question').value.trim();
+      const body = document.getElementById('faq-body').value.trim();
+      const order = parseInt(document.getElementById('faq-order').value || '1', 10);
+      const sha = document.getElementById('faq-sha').value;
+
+      if (!slug) slug = slugify(question);
+
+      const meta = { question, order };
+      const md = buildMarkdown(meta, body);
+
+      let newSha = sha;
+      try {
+        newSha = await ghSave(`src/content/faq/${slug}.md`, md, `Update tanya jawab: ${question}`);
+        showAlert('Pertanyaan berhasil disimpan.', true);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+
+      const idx = faqItems.findIndex(x => x.slug === slug);
+      if (idx >= 0) {
+        faqItems[idx] = { slug, sha: newSha, meta, body };
+      } else {
+        faqItems.push({ slug, sha: newSha, meta, body });
+      }
+      renderFaqCards();
+      closeFaqEditor();
+    }
+
+    async function confirmDeleteFaq(slug) {
+      if (!confirm('Hapus pertanyaan ini? Tindakan ini tidak bisa dibatalkan.')) return;
+      try {
+        await ghDelete(`src/content/faq/${slug}.md`, `Hapus tanya jawab: ${slug}`);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+      faqItems = faqItems.filter(x => x.slug !== slug);
+      renderFaqCards();
+      showAlert('Pertanyaan telah dihapus.', true);
+    }
+
+    function deleteCurrentFaq() {
+      const slug = document.getElementById('faq-slug').value;
+      if (slug) { confirmDeleteFaq(slug); closeFaqEditor(); }
+    }
+
+    // ============================================================
+    // 7. KEUNGGULAN FUNCTIONS (CRUD)
+    // ============================================================
+    async function fetchRemoteKeunggulan() {
+      try {
+        const res = await ghFetch('src/content/keunggulan');
+        if (!res.ok) return;
+        const files = await res.json();
+        keunggulanItems = [];
+        for (const file of files) {
+          if (!file.name.endsWith('.md')) continue;
+          const fileRes = await ghFetch(file.path);
+          if (!fileRes.ok) continue;
+          const fileData = await fileRes.json();
+          const raw = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+          const { meta, body } = parseMarkdown(raw);
+          keunggulanItems.push({ slug: file.name.replace(/\.md$/, ''), sha: fileData.sha, meta, body });
+        }
+      } catch (e) {}
+      renderKeunggulanCards();
+    }
+
+    function renderKeunggulanCards() {
+      const c = document.getElementById('keunggulan-cards-list');
+      if (!c) return;
+      if (keunggulanItems.length === 0) {
+        c.innerHTML = '<div class="col-span-full py-8 text-center text-slate-400 font-semibold">Belum ada keunggulan. Klik Tambah Keunggulan di atas.</div>';
+        return;
+      }
+      keunggulanItems.sort((a, b) => (a.meta.order || 0) - (b.meta.order || 0));
+      c.innerHTML = keunggulanItems.map(item => `
+        <div class="p-5 rounded-2xl bg-white border-2 border-slate-200 hover:border-lime-600 transition flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-bold text-lime-800 bg-lime-100 px-2.5 py-0.5 rounded-md">Urutan ${item.meta.order || 1}</span>
+            <h5 class="font-extrabold text-slate-900 text-base leading-snug mt-2">${escapeHtml(item.meta.icon || '')} ${escapeHtml(item.meta.title || item.slug)}</h5>
+            ${item.meta.badge ? `<p class="text-xs font-bold text-slate-500 mt-1">${escapeHtml(item.meta.badge)}</p>` : ''}
+            <p class="text-xs text-slate-600 mt-1 line-clamp-2">${escapeHtml(item.meta.desc || '')}</p>
+          </div>
+          <div class="flex items-center gap-2 mt-4">
+            <button onclick="startEditKeunggulan('${item.slug}')" class="flex-1 rounded-xl bg-lime-700 hover:bg-lime-800 text-white font-bold text-sm py-2.5 px-3 cursor-pointer">Ubah</button>
+            <button onclick="confirmDeleteKeunggulan('${item.slug}')" class="rounded-xl bg-red-100 hover:bg-red-200 text-red-700 font-bold text-sm px-4 py-2.5 cursor-pointer">Hapus</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function startEditKeunggulan(slug) {
+      const box = document.getElementById('keunggulan-editor-box');
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+      const btnDel = document.getElementById('btn-keu-delete');
+
+      if (slug === 'new') {
+        document.getElementById('keunggulan-form-title').textContent = 'Tambah Keunggulan';
+        document.getElementById('keu-slug').value = '';
+        document.getElementById('keu-sha').value = '';
+        document.getElementById('keu-title').value = '';
+        document.getElementById('keu-icon').value = '';
+        document.getElementById('keu-badge').value = '';
+        document.getElementById('keu-desc').value = '';
+        document.getElementById('keu-order').value = keunggulanItems.length + 1;
+        btnDel.classList.add('hidden');
+        return;
+      }
+
+      document.getElementById('keunggulan-form-title').textContent = `Ubah Keunggulan: ${slug}`;
+      document.getElementById('keu-slug').value = slug;
+      document.getElementById('keu-sha').value = '';
+      document.getElementById('keu-title').value = '';
+      document.getElementById('keu-icon').value = '';
+      document.getElementById('keu-badge').value = '';
+      document.getElementById('keu-desc').value = '';
+      document.getElementById('keu-order').value = 1;
+      btnDel.classList.remove('hidden');
+
+      const cached = keunggulanItems.find(x => x.slug === slug);
+      if (cached && cached.meta.title) {
+        document.getElementById('keu-title').value = cached.meta.title;
+        document.getElementById('keu-icon').value = cached.meta.icon || '';
+        document.getElementById('keu-badge').value = cached.meta.badge || '';
+        document.getElementById('keu-desc').value = cached.meta.desc || '';
+      }
+      if (currentToken) {
+        try {
+          const res = await ghFetch(`src/content/keunggulan/${slug}.md`);
+          if (res.ok) {
+            const data = await res.json();
+            const { meta } = parseMarkdown(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
+            document.getElementById('keu-title').value = meta.title || '';
+            document.getElementById('keu-icon').value = meta.icon || '';
+            document.getElementById('keu-badge').value = meta.badge || '';
+            document.getElementById('keu-desc').value = meta.desc || '';
+            document.getElementById('keu-order').value = meta.order || 1;
+            document.getElementById('keu-sha').value = data.sha;
+          }
+        } catch (e) { showAlert('Gagal memuat keunggulan: ' + e.message, false); }
+      }
+    }
+
+    function closeKeunggulanEditor() {
+      document.getElementById('keunggulan-editor-box').classList.add('hidden');
+    }
+
+    async function saveKeunggulan() {
+      let slug = document.getElementById('keu-slug').value.trim();
+      const title = document.getElementById('keu-title').value.trim();
+      const icon = document.getElementById('keu-icon').value.trim();
+      const badge = document.getElementById('keu-badge').value.trim();
+      const desc = document.getElementById('keu-desc').value.trim();
+      const order = parseInt(document.getElementById('keu-order').value || '1', 10);
+      const sha = document.getElementById('keu-sha').value;
+
+      if (!slug) slug = slugify(title);
+      const meta = { icon, title, desc, badge, order };
+      const md = buildMarkdown(meta, '');
+
+      let newSha = sha;
+      try {
+        newSha = await ghSave(`src/content/keunggulan/${slug}.md`, md, `Update keunggulan: ${title}`);
+        showAlert('Keunggulan berhasil disimpan.', true);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+
+      const idx = keunggulanItems.findIndex(x => x.slug === slug);
+      if (idx >= 0) keunggulanItems[idx] = { slug, sha: newSha, meta, body: '' };
+      else keunggulanItems.push({ slug, sha: newSha, meta, body: '' });
+      renderKeunggulanCards();
+      closeKeunggulanEditor();
+    }
+
+    async function confirmDeleteKeunggulan(slug) {
+      if (!confirm('Hapus keunggulan ini? Tindakan ini tidak bisa dibatalkan.')) return;
+      try {
+        await ghDelete(`src/content/keunggulan/${slug}.md`, `Hapus keunggulan: ${slug}`);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+      keunggulanItems = keunggulanItems.filter(x => x.slug !== slug);
+      renderKeunggulanCards();
+      closeKeunggulanEditor();
+      showAlert('Keunggulan telah dihapus.', true);
+    }
+
+    function deleteCurrentKeunggulan() {
+      const slug = document.getElementById('keu-slug').value;
+      if (slug && slug !== 'new') confirmDeleteKeunggulan(slug);
+    }
+
+    // ============================================================
+    // 8. STATISTIK FUNCTIONS (CRUD)
+    // ============================================================
+    async function fetchRemoteStatistik() {
+      try {
+        const res = await ghFetch('src/content/statistik');
+        if (!res.ok) return;
+        const files = await res.json();
+        statistikItems = [];
+        for (const file of files) {
+          if (!file.name.endsWith('.md')) continue;
+          const fileRes = await ghFetch(file.path);
+          if (!fileRes.ok) continue;
+          const fileData = await fileRes.json();
+          const raw = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+          const { meta, body } = parseMarkdown(raw);
+          statistikItems.push({ slug: file.name.replace(/\.md$/, ''), sha: fileData.sha, meta, body });
+        }
+      } catch (e) {}
+      renderStatistikCards();
+    }
+
+    function renderStatistikCards() {
+      const c = document.getElementById('statistik-cards-list');
+      if (!c) return;
+      if (statistikItems.length === 0) {
+        c.innerHTML = '<div class="col-span-full py-8 text-center text-slate-400 font-semibold">Belum ada angka. Klik Tambah Angka di atas.</div>';
+        return;
+      }
+      statistikItems.sort((a, b) => (a.meta.order || 0) - (b.meta.order || 0));
+      c.innerHTML = statistikItems.map(item => `
+        <div class="p-5 rounded-2xl bg-white border-2 border-slate-200 hover:border-cyan-600 transition flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-bold text-cyan-800 bg-cyan-100 px-2.5 py-0.5 rounded-md">Urutan ${item.meta.order || 1}</span>
+            <p class="text-3xl font-extrabold text-hijau-800 mt-2">${escapeHtml(item.meta.value || '')}</p>
+            <p class="text-sm font-bold text-slate-600 mt-1">${escapeHtml(item.meta.label || item.slug)}</p>
+          </div>
+          <div class="flex items-center gap-2 mt-4">
+            <button onclick="startEditStatistik('${item.slug}')" class="flex-1 rounded-xl bg-cyan-700 hover:bg-cyan-800 text-white font-bold text-sm py-2.5 px-3 cursor-pointer">Ubah</button>
+            <button onclick="confirmDeleteStatistik('${item.slug}')" class="rounded-xl bg-red-100 hover:bg-red-200 text-red-700 font-bold text-sm px-4 py-2.5 cursor-pointer">Hapus</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function startEditStatistik(slug) {
+      const box = document.getElementById('statistik-editor-box');
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+      const btnDel = document.getElementById('btn-stt-delete');
+
+      if (slug === 'new') {
+        document.getElementById('statistik-form-title').textContent = 'Tambah Angka';
+        document.getElementById('stt-slug').value = '';
+        document.getElementById('stt-sha').value = '';
+        document.getElementById('stt-value').value = '';
+        document.getElementById('stt-label').value = '';
+        document.getElementById('stt-order').value = statistikItems.length + 1;
+        btnDel.classList.add('hidden');
+        return;
+      }
+
+      document.getElementById('statistik-form-title').textContent = `Ubah Angka: ${slug}`;
+      document.getElementById('stt-slug').value = slug;
+      document.getElementById('stt-sha').value = '';
+      document.getElementById('stt-value').value = '';
+      document.getElementById('stt-label').value = '';
+      document.getElementById('stt-order').value = 1;
+      btnDel.classList.remove('hidden');
+
+      const cached = statistikItems.find(x => x.slug === slug);
+      if (cached && cached.meta.value) {
+        document.getElementById('stt-value').value = cached.meta.value;
+        document.getElementById('stt-label').value = cached.meta.label || '';
+      }
+      if (currentToken) {
+        try {
+          const res = await ghFetch(`src/content/statistik/${slug}.md`);
+          if (res.ok) {
+            const data = await res.json();
+            const { meta } = parseMarkdown(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
+            document.getElementById('stt-value').value = meta.value || '';
+            document.getElementById('stt-label').value = meta.label || '';
+            document.getElementById('stt-order').value = meta.order || 1;
+            document.getElementById('stt-sha').value = data.sha;
+          }
+        } catch (e) { showAlert('Gagal memuat statistik: ' + e.message, false); }
+      }
+    }
+
+    function closeStatistikEditor() {
+      document.getElementById('statistik-editor-box').classList.add('hidden');
+    }
+
+    async function saveStatistik() {
+      let slug = document.getElementById('stt-slug').value.trim();
+      const value = document.getElementById('stt-value').value.trim();
+      const label = document.getElementById('stt-label').value.trim();
+      const order = parseInt(document.getElementById('stt-order').value || '1', 10);
+      const sha = document.getElementById('stt-sha').value;
+
+      if (!slug) slug = slugify(label);
+      const meta = { label, value, order };
+      const md = buildMarkdown(meta, '');
+
+      let newSha = sha;
+      try {
+        newSha = await ghSave(`src/content/statistik/${slug}.md`, md, `Update statistik: ${label}`);
+        showAlert('Statistik berhasil disimpan.', true);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+
+      const idx = statistikItems.findIndex(x => x.slug === slug);
+      if (idx >= 0) statistikItems[idx] = { slug, sha: newSha, meta, body: '' };
+      else statistikItems.push({ slug, sha: newSha, meta, body: '' });
+      renderStatistikCards();
+      closeStatistikEditor();
+    }
+
+    async function confirmDeleteStatistik(slug) {
+      if (!confirm('Hapus angka ini? Tindakan ini tidak bisa dibatalkan.')) return;
+      try {
+        await ghDelete(`src/content/statistik/${slug}.md`, `Hapus statistik: ${slug}`);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+      statistikItems = statistikItems.filter(x => x.slug !== slug);
+      renderStatistikCards();
+      closeStatistikEditor();
+      showAlert('Statistik telah dihapus.', true);
+    }
+
+    function deleteCurrentStatistik() {
+      const slug = document.getElementById('stt-slug').value;
+      if (slug && slug !== 'new') confirmDeleteStatistik(slug);
+    }
+
+    // ============================================================
+    // 7. GURU & STAF FUNCTIONS (CRUD)
+    // ============================================================
+    async function fetchRemoteGuru() {
+      try {
+        const res = await ghFetch('src/content/guru-staf');
+        if (!res.ok) return;
+        const files = await res.json();
+        guruItems = [];
+        for (const file of files) {
+          if (!file.name.endsWith('.md')) continue;
+          const fileRes = await ghFetch(file.path);
+          if (!fileRes.ok) continue;
+          const fileData = await fileRes.json();
+          const raw = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+          const { meta } = parseMarkdown(raw);
+          guruItems.push({ slug: file.name.replace(/\.md$/, ''), sha: fileData.sha, meta });
+        }
+      } catch (e) {}
+      renderGuruCards();
+    }
+
+    function renderGuruCards() {
+      const c = document.getElementById('guru-cards-list');
+      if (!c) return;
+      if (guruItems.length === 0) {
+        c.innerHTML = '<div class="col-span-full py-8 text-center text-slate-400 font-semibold">Belum ada anggota. Klik Tambah Anggota di atas.</div>';
+        return;
+      }
+      guruItems.sort((a, b) => (a.meta.order || 0) - (b.meta.order || 0));
+      c.innerHTML = guruItems.map(item => `
+        <div class="p-5 rounded-2xl bg-white border-2 border-slate-200 hover:border-violet-600 transition flex flex-col justify-between gap-3">
+          <div class="flex items-start gap-4">
+            ${item.meta.foto ? `
+              <div class="size-16 shrink-0 overflow-hidden rounded-xl bg-slate-100">
+                <img src="/images/guru-staf/${escapeHtml(item.meta.foto)}" class="size-full object-cover" alt="Foto ${escapeHtml(item.meta.nama)}">
+              </div>
+            ` : `
+              <div class="size-16 shrink-0 rounded-xl bg-violet-100 flex items-center justify-center text-violet-700 font-extrabold text-lg">${escapeHtml((item.meta.nama || '').split(' ')[0]?.[0] || '?')}</div>
+            `}
+            <div class="min-w-0">
+              <span class="text-[11px] font-bold text-violet-700 bg-violet-100 px-2 py-0.5 rounded-md inline-block mb-1">${item.meta.grup === 'tendik' ? 'Tendik' : 'Pendidik'} · Urutan ${item.meta.order || 1}</span>
+              <p class="font-extrabold text-slate-800 leading-snug">${escapeHtml(item.meta.nama || item.slug)}</p>
+              ${item.meta.jabatan ? `<p class="text-sm font-semibold text-slate-500 mt-0.5">${escapeHtml(item.meta.jabatan)}</p>` : ''}
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="startEditGuru('${item.slug}')" class="flex-1 rounded-xl bg-violet-700 hover:bg-violet-800 text-white font-bold text-sm py-2.5 px-3 cursor-pointer">Ubah</button>
+            <button onclick="confirmDeleteGuru('${item.slug}')" class="rounded-xl bg-red-100 hover:bg-red-200 text-red-700 font-bold text-sm px-4 py-2.5 cursor-pointer">Hapus</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderGuruFotoSelect() {
+      const sel = document.getElementById('gs-foto');
+      if (!sel) return;
+      const current = sel.value;
+      sel.innerHTML = '<option value="">— Tanpa Foto (Kartu Inisial) —</option>';
+      guruFotoList.slice().sort().forEach(f => {
+        const opt = document.createElement('option');
+        opt.value = f;
+        opt.textContent = f;
+        sel.appendChild(opt);
+      });
+      sel.value = current;
+    }
+
+    async function refreshGuruFotoList() {
+      try {
+        const res = await ghFetch('public/images/guru-staf');
+        if (!res.ok) return;
+        const files = await res.json();
+        guruFotoList = files.filter(f => /\.(jpe?g|png|webp)$/i.test(f.name)).map(f => f.name);
+        renderGuruFotoSelect();
+      } catch (e) {}
+    }
+
+    async function startEditGuru(slug) {
+      const box = document.getElementById('guru-editor-box');
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+      const btnDel = document.getElementById('btn-gs-delete');
+      const preview = document.getElementById('guru-foto-preview');
+      const status = document.getElementById('guru-foto-status');
+      preview.classList.add('hidden');
+      preview.src = '';
+      if (status) status.textContent = '';
+
+      if (slug === 'new') {
+        document.getElementById('guru-form-title').textContent = 'Tambah Anggota';
+        document.getElementById('gs-slug').value = '';
+        document.getElementById('gs-sha').value = '';
+        document.getElementById('gs-nama').value = '';
+        document.getElementById('gs-jabatan').value = '';
+        document.getElementById('gs-grup').value = 'pendidik';
+        document.getElementById('gs-order').value = guruItems.length + 1;
+        document.getElementById('gs-foto').value = '';
+        btnDel.classList.add('hidden');
+      } else {
+        document.getElementById('guru-form-title').textContent = `Ubah: ${slug}`;
+        const item = guruItems.find(x => x.slug === slug);
+        if (item) {
+          document.getElementById('gs-slug').value = item.slug;
+          document.getElementById('gs-sha').value = item.sha;
+          document.getElementById('gs-nama').value = item.meta.nama || '';
+          document.getElementById('gs-jabatan').value = item.meta.jabatan || '';
+          document.getElementById('gs-grup').value = item.meta.grup || 'pendidik';
+          document.getElementById('gs-order').value = item.meta.order || 1;
+          document.getElementById('gs-foto').value = item.meta.foto || '';
+          if (item.meta.foto) {
+            preview.src = `/images/guru-staf/${item.meta.foto}`;
+            preview.classList.remove('hidden');
+          }
+        }
+        btnDel.classList.remove('hidden');
+      }
+      refreshGuruFotoList();
+    }
+
+    function closeGuruEditor() {
+      document.getElementById('guru-editor-box').classList.add('hidden');
+    }
+
+    async function saveGuru() {
+      let slug = document.getElementById('gs-slug').value.trim();
+      const nama = document.getElementById('gs-nama').value.trim();
+      const jabatan = document.getElementById('gs-jabatan').value.trim();
+      const grup = document.getElementById('gs-grup').value;
+      const foto = document.getElementById('gs-foto').value;
+      const order = parseInt(document.getElementById('gs-order').value || '1', 10);
+      const sha = document.getElementById('gs-sha').value;
+
+      if (!nama) { showAlert('Nama tidak boleh kosong.', false); return; }
+      if (!slug) slug = slugify(nama);
+
+      // Slug baru harus unik: kalau sudah dipakai file lain, tambahkan akhiran.
+      if (!sha && guruItems.some(x => x.slug === slug)) {
+        slug = slug + '-' + (guruItems.length + 1);
+      }
+
+      const meta = { nama, jabatan, grup, foto, order };
+      const md = buildMarkdown(meta, '');
+
+      let newSha = sha;
+      try {
+        newSha = await ghSave(`src/content/guru-staf/${slug}.md`, md, `Update guru/staf: ${nama}`);
+        showAlert('Guru & Staf berhasil disimpan.', true);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+
+      const idx = guruItems.findIndex(x => x.slug === slug);
+      if (idx >= 0) guruItems[idx] = { slug, sha: newSha, meta };
+      else guruItems.push({ slug, sha: newSha, meta });
+      renderGuruCards();
+      closeGuruEditor();
+    }
+
+    async function confirmDeleteGuru(slug) {
+      if (!confirm('Hapus anggota ini? Tindakan ini tidak bisa dibatalkan.')) return;
+      try {
+        await ghDelete(`src/content/guru-staf/${slug}.md`, `Hapus guru/staf: ${slug}`);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+      guruItems = guruItems.filter(x => x.slug !== slug);
+      renderGuruCards();
+      closeGuruEditor();
+      showAlert('Guru & Staf telah dihapus.', true);
+    }
+
+    function deleteCurrentGuru() {
+      const slug = document.getElementById('gs-slug').value;
+      if (slug && slug !== 'new') confirmDeleteGuru(slug);
+    }
+
+    async function uploadGuruFoto(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const statusEl = document.getElementById('guru-foto-status');
+      if (statusEl) statusEl.textContent = 'Mengunggah foto...';
+      try {
+        const base64 = await fileToBase64(file);
+        const fileName = `guru-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+        const res = await ghFetch(`public/images/guru-staf/${fileName}`, {
+          method: 'PUT',
+          body: JSON.stringify({ message: `Upload foto guru: ${fileName}`, content: base64 })
+        });
+        if (!res.ok) throw new Error('Gagal mengunggah foto.');
+        if (!guruFotoList.includes(fileName)) guruFotoList.push(fileName);
+        renderGuruFotoSelect();
+        const sel = document.getElementById('gs-foto');
+        sel.value = fileName;
+        const preview = document.getElementById('guru-foto-preview');
+        preview.src = `/images/guru-staf/${fileName}`;
+        preview.classList.remove('hidden');
+        if (statusEl) statusEl.textContent = 'Foto berhasil diunggah.';
+        showAlert('Foto berhasil diunggah.', true);
+      } catch (e) {
+        if (statusEl) statusEl.textContent = 'Gagal mengunggah foto.';
+        showAlert(e.message, false);
+      }
+      event.target.value = '';
+    }
+
+    // ============================================================
+    // 6. KURIKULUM FUNCTIONS (CRUD)
+    // ============================================================
+    async function fetchRemoteKurikulum() {
+      try {
+        const res = await ghFetch('src/content/kurikulum');
+        if (!res.ok) return;
+        const files = await res.json();
+        kurikulumItems = [];
+        for (const file of files) {
+          if (!file.name.endsWith('.md')) continue;
+          const fileRes = await ghFetch(file.path);
+          if (!fileRes.ok) continue;
+          const fileData = await fileRes.json();
+          const raw = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+          const { meta, body } = parseMarkdown(raw);
+          kurikulumItems.push({
+            slug: file.name.replace(/\.md$/, ''),
+            sha: fileData.sha,
+            meta,
+            body
+          });
+        }
+      } catch (e) {}
+      renderKurikulumCards();
+    }
+
+    function renderKurikulumCards() {
+      const container = document.getElementById('kurikulum-cards-list');
+      if (!container) return;
+      if (kurikulumItems.length === 0) {
+        container.innerHTML = '<div class="col-span-full py-8 text-center text-slate-400 font-semibold">Belum ada dokumen. Klik Tambah Dokumen di atas.</div>';
+        return;
+      }
+      kurikulumItems.sort((a, b) => (a.meta.order || 0) - (b.meta.order || 0));
+      container.innerHTML = kurikulumItems.map(item => `
+        <div class="p-5 rounded-2xl bg-white border-2 border-slate-200 hover:border-teal-600 transition flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-bold text-teal-800 bg-teal-100 px-2.5 py-0.5 rounded-md">Urutan ${item.meta.order || 1}</span>
+            <h5 class="font-extrabold text-slate-900 text-base leading-snug mt-2">${escapeHtml(item.meta.title || item.slug)}</h5>
+            ${item.meta.bab ? `<p class="text-xs font-bold text-slate-500 mt-1">${escapeHtml(item.meta.bab)}</p>` : ''}
+          </div>
+          <div class="flex items-center gap-2 mt-4">
+            <button onclick="startEditKurikulum('${item.slug}')" class="flex-1 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-sm py-2.5 px-3 cursor-pointer">
+              Ubah
+            </button>
+            <button onclick="confirmDeleteKurikulum('${item.slug}')" class="rounded-xl bg-red-100 hover:bg-red-200 text-red-700 font-bold text-sm px-4 py-2.5 cursor-pointer">
+              Hapus
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function startEditKurikulum(slug) {
+      const box = document.getElementById('kurikulum-editor-box');
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+
+      const btnDel = document.getElementById('btn-kur-delete');
+
+      if (slug === 'new') {
+        document.getElementById('kurikulum-form-title').textContent = 'Tambah Dokumen';
+        document.getElementById('kur-slug').value = '';
+        document.getElementById('kur-sha').value = '';
+        document.getElementById('kur-title').value = '';
+        document.getElementById('kur-bab').value = '';
+        document.getElementById('kur-body').value = '';
+        document.getElementById('kur-order').value = kurikulumItems.length + 1;
+        btnDel.classList.add('hidden');
+        return;
+      }
+
+      document.getElementById('kurikulum-form-title').textContent = `Ubah Dokumen: ${slug}`;
+      document.getElementById('kur-slug').value = slug;
+      document.getElementById('kur-sha').value = '';
+      document.getElementById('kur-title').value = '';
+      document.getElementById('kur-bab').value = '';
+      document.getElementById('kur-body').value = 'Memuat isi dokumen...';
+      document.getElementById('kur-order').value = 1;
+      btnDel.classList.remove('hidden');
+
+      const cached = kurikulumItems.find(x => x.slug === slug);
+      if (cached && cached.meta.title) document.getElementById('kur-title').value = cached.meta.title;
+
+      if (currentToken) {
+        try {
+          const res = await ghFetch(`src/content/kurikulum/${slug}.md`);
+          if (res.ok) {
+            const data = await res.json();
+            const raw = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+            const { meta, body } = parseMarkdown(raw);
+            document.getElementById('kur-title').value = meta.title || '';
+            document.getElementById('kur-bab').value = meta.bab || '';
+            document.getElementById('kur-body').value = body || '';
+            document.getElementById('kur-order').value = meta.order || 1;
+            document.getElementById('kur-sha').value = data.sha;
+          }
+        } catch (e) { showAlert('Gagal memuat kurikulum: ' + e.message, false); }
+      }
+    }
+
+    function closeKurikulumEditor() {
+      document.getElementById('kurikulum-editor-box').classList.add('hidden');
+    }
+
+    async function saveKurikulum() {
+      let slug = document.getElementById('kur-slug').value.trim();
+      const title = document.getElementById('kur-title').value.trim();
+      const bab = document.getElementById('kur-bab').value.trim();
+      const body = document.getElementById('kur-body').value.trim();
+      const order = parseInt(document.getElementById('kur-order').value || '1', 10);
+      const sha = document.getElementById('kur-sha').value;
+
+      if (!slug) slug = slugify(title);
+      const meta = { title, bab, order };
+      const md = buildMarkdown(meta, body);
+
+      let newSha = sha;
+      try {
+        newSha = await ghSave(`src/content/kurikulum/${slug}.md`, md, `Update dokumen: ${title}`);
+        showAlert(`Dokumen "${title}" berhasil disimpan.`, true);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+
+      const idx = kurikulumItems.findIndex(x => x.slug === slug);
+      if (idx >= 0) {
+        kurikulumItems[idx] = { slug, sha: newSha, meta, body };
+      } else {
+        kurikulumItems.push({ slug, sha: newSha, meta, body });
+      }
+      renderKurikulumCards();
+      closeKurikulumEditor();
+    }
+
+    async function confirmDeleteKurikulum(slug) {
+      if (!confirm('Hapus dokumen ini? Tindakan ini tidak bisa dibatalkan.')) return;
+      try {
+        await ghDelete(`src/content/kurikulum/${slug}.md`, `Hapus dokumen: ${slug}`);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+      kurikulumItems = kurikulumItems.filter(x => x.slug !== slug);
+      renderKurikulumCards();
+      closeKurikulumEditor();
+      showAlert('Dokumen telah dihapus.', true);
+    }
+
+    function deleteCurrentKurikulum() {
+      const slug = document.getElementById('kur-slug').value;
+      if (slug && slug !== 'new') {
+        confirmDeleteKurikulum(slug);
+      }
+    }
+
+    // ============================================================
+    // 5. HALAMAN STATIS FUNCTIONS (CRUD)
+    // ============================================================
+    async function fetchRemoteHalaman() {
+      try {
+        const res = await ghFetch('src/content/halaman');
+        if (!res.ok) return;
+        const files = await res.json();
+        halamanItems = [];
+        for (const file of files) {
+          if (!file.name.endsWith('.md')) continue;
+          const fileRes = await ghFetch(file.path);
+          if (!fileRes.ok) continue;
+          const fileData = await fileRes.json();
+          const raw = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+          const { meta, body } = parseMarkdown(raw);
+          halamanItems.push({
+            slug: file.name.replace(/\.md$/, ''),
+            sha: fileData.sha,
+            meta,
+            body
+          });
+        }
+      } catch (e) {}
+      renderHalamanCards();
+    }
+
+    function renderHalamanCards() {
+      const container = document.getElementById('halaman-cards-list');
+      if (!container) return;
+      if (halamanItems.length === 0) {
+        container.innerHTML = '<div class="col-span-full py-8 text-center text-slate-400 font-semibold">Belum ada halaman. Klik Tambah Halaman di atas.</div>';
+        return;
+      }
+      halamanItems.sort((a, b) => (a.meta.order || 0) - (b.meta.order || 0));
+      container.innerHTML = halamanItems.map(item => `
+        <div class="p-6 rounded-3xl bg-slate-50 border-2 border-slate-200 hover:border-purple-600 transition flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-bold text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-md">Urutan ${item.meta.order || 1}</span>
+            <h4 class="font-extrabold text-slate-900 text-lg mt-2">${escapeHtml(item.meta.title || item.slug)}</h4>
+            <p class="text-xs text-slate-500 mt-1 line-clamp-3">${escapeHtml(item.meta.description || item.body || '')}</p>
+          </div>
+          <div class="flex items-center gap-2 mt-4">
+            <button onclick="startEditHalaman('${item.slug}')" class="flex-1 rounded-xl bg-purple-800 hover:bg-purple-900 text-white font-extrabold py-3 text-sm transition cursor-pointer">
+              Ubah
+            </button>
+            <button onclick="confirmDeleteHalaman('${item.slug}')" class="rounded-xl bg-red-100 hover:bg-red-200 text-red-700 font-bold px-4 py-3 text-sm cursor-pointer">
+              Hapus
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function startEditHalaman(slug) {
+      const box = document.getElementById('halaman-editor-box');
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+
+      const btnDel = document.getElementById('btn-hal-delete');
+
+      if (slug === 'new') {
+        document.getElementById('halaman-form-title').textContent = 'Tambah Halaman';
+        document.getElementById('hal-slug').value = '';
+        document.getElementById('hal-sha').value = '';
+        document.getElementById('hal-title').value = '';
+        document.getElementById('hal-body').value = '';
+        document.getElementById('hal-order').value = halamanItems.length + 1;
+        btnDel.classList.add('hidden');
+        return;
+      }
+
+      // Mode ubah: pakai data dari daftar, muat isi dari GitHub.
+      document.getElementById('halaman-form-title').textContent = `Ubah Halaman: ${slug}`;
+      document.getElementById('hal-slug').value = slug;
+      document.getElementById('hal-sha').value = '';
+      document.getElementById('hal-title').value = '';
+      document.getElementById('hal-body').value = 'Memuat isi teks...';
+      document.getElementById('hal-order').value = 1;
+      btnDel.classList.remove('hidden');
+
+      const cached = halamanItems.find(x => x.slug === slug);
+      if (cached && cached.meta.title) document.getElementById('hal-title').value = cached.meta.title;
+
+      if (currentToken) {
+        try {
+          const res = await ghFetch(`src/content/halaman/${slug}.md`);
+          if (res.ok) {
+            const data = await res.json();
+            const raw = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+            const { meta, body } = parseMarkdown(raw);
+            document.getElementById('hal-title').value = meta.title || '';
+            document.getElementById('hal-body').value = body || '';
+            document.getElementById('hal-order').value = meta.order || 1;
+            document.getElementById('hal-sha').value = data.sha;
+          }
+        } catch (e) { showAlert('Gagal memuat halaman: ' + e.message, false); }
+      }
+    }
+
+    function closeHalamanEditor() {
+      document.getElementById('halaman-editor-box').classList.add('hidden');
+    }
+
+    async function saveHalaman() {
+      let slug = document.getElementById('hal-slug').value.trim();
+      const title = document.getElementById('hal-title').value.trim();
+      const body = document.getElementById('hal-body').value.trim();
+      const order = parseInt(document.getElementById('hal-order').value || '1', 10);
+      const sha = document.getElementById('hal-sha').value;
+
+      if (!slug) slug = slugify(title);
+      const meta = { title, order };
+      const md = buildMarkdown(meta, body);
+
+      let newSha = sha;
+      try {
+        newSha = await ghSave(`src/content/halaman/${slug}.md`, md, `Update halaman: ${title}`);
+        showAlert(`Halaman "${title}" berhasil disimpan.`, true);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+
+      const idx = halamanItems.findIndex(x => x.slug === slug);
+      if (idx >= 0) {
+        halamanItems[idx] = { slug, sha: newSha, meta, body };
+      } else {
+        halamanItems.push({ slug, sha: newSha, meta, body });
+      }
+      renderHalamanCards();
+      closeHalamanEditor();
+    }
+
+    async function confirmDeleteHalaman(slug) {
+      if (!confirm('Hapus halaman ini? Tindakan ini tidak bisa dibatalkan.')) return;
+      try {
+        await ghDelete(`src/content/halaman/${slug}.md`, `Hapus halaman: ${slug}`);
+      } catch (e) {
+        showAlert(e.message, false);
+        return;
+      }
+      halamanItems = halamanItems.filter(x => x.slug !== slug);
+      renderHalamanCards();
+      closeHalamanEditor();
+      showAlert('Halaman telah dihapus.', true);
+    }
+
+    function deleteCurrentHalaman() {
+      const slug = document.getElementById('hal-slug').value;
+      if (slug && slug !== 'new') {
+        confirmDeleteHalaman(slug);
+      }
+    }
+
+    // --- UTILITIES: IMAGE UPLOAD ---
+    async function uploadSinglePhoto(event, targetInputId) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const statusEl = document.getElementById('berita-cover-status');
+      if (statusEl) statusEl.textContent = 'Mengunggah foto...';
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const fileName = `foto-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+        if (currentToken) {
+          try {
+            const res = await ghFetch(`public/images/${fileName}`, {
+              method: 'PUT',
+              body: JSON.stringify({
+                message: `Upload foto: ${fileName}`,
+                content: e.target.result.split(',')[1]
+              })
+            });
+            if (res.ok) {
+              document.getElementById(targetInputId).value = `/images/${fileName}`;
+              if (statusEl) statusEl.textContent = 'Foto berhasil diunggah.';
+              showAlert('Foto berhasil diunggah.', true);
+              return;
+            }
+          } catch (err) {}
+        }
+        document.getElementById(targetInputId).value = `/images/${fileName}`;
+        if (statusEl) statusEl.textContent = `Foto dipilih: ${file.name}`;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function uploadMultiplePhotos(event) {
+      const files = Array.from(event.target.files);
+      if (!files.length) return;
+      showAlert(`Memproses ${files.length} foto...`, true);
+
+      const uploaded = [];
+      for (const file of files) {
+        const fileName = `galeri-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+        if (currentToken) {
+          try {
+            const base64 = await fileToBase64(file);
+            await ghFetch(`public/images/${fileName}`, {
+              method: 'PUT',
+              body: JSON.stringify({
+                message: `Upload foto galeri: ${fileName}`,
+                content: base64
+              })
+            });
+          } catch (err) {}
+        }
+        uploaded.push(`/images/${fileName}`);
+      }
+
+      const input = document.getElementById('galeri-photos-text');
+      const existing = input.value.trim();
+      input.value = existing ? existing + '\n' + uploaded.join('\n') : uploaded.join('\n');
+      renderGaleriThumbnails();
+      showAlert(`${uploaded.length} foto ditambahkan ke album.`, true);
+    }
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(r.result.split(',')[1]);
+        r.onerror = reject;
+        r.readAsDataURL(file);
+      });
+    }
+
+    // --- MARKDOWN PARSER & BUILDER ---
+    function parseMarkdown(text) {
+      const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+      if (!match) return { meta: {}, body: text };
+      const rawMeta = match[1];
+      const body = match[2] || '';
+      const meta = {};
+
+      const lines = rawMeta.split(/\r?\n/);
+      let currentArrayKey = null;
+
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        if (line.startsWith('  - ') && currentArrayKey) {
+          meta[currentArrayKey] = meta[currentArrayKey] || [];
+          meta[currentArrayKey].push(line.replace('  - ', '').trim().replace(/^["']|["']$/g, ''));
+          continue;
+        }
+        const kv = line.match(/^([a-zA-Z0-9_-]+):\s*(.*)$/);
+        if (kv) {
+          const key = kv[1].trim();
+          let val = kv[2].trim();
+          if (val === '') {
+            currentArrayKey = key;
+            meta[key] = [];
+          } else {
+            currentArrayKey = null;
+            if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
+            else if (val.startsWith("'") && val.endsWith("'")) val = val.slice(1, -1);
+            else if (val === 'true') val = true;
+            else if (val === 'false') val = false;
+            else if (!isNaN(Number(val)) && val !== '') val = Number(val);
+            meta[key] = val;
+          }
+        }
+      }
+      return { meta, body };
+    }
+
+    function buildMarkdown(meta, body) {
+      let yaml = '---\n';
+      for (const [k, v] of Object.entries(meta)) {
+        if (v === undefined || v === null) continue;
+        if (Array.isArray(v)) {
+          yaml += `${k}:\n`;
+          v.forEach(item => { yaml += `  - "${item}"\n`; });
+        } else if (typeof v === 'string') {
+          yaml += `${k}: "${v.replace(/"/g, '\\"')}"\n`;
+        } else {
+          yaml += `${k}: ${v}\n`;
+        }
+      }
+      yaml += '---\n\n' + (body || '');
+      return yaml;
+    }
+
+    // ============================================================
+    // 12. PROFIL SINGKAT FUNCTIONS (single-entry CRUD)
+    // ============================================================
+    async function loadProfilSingkat() {
+      try {
+        const res = await ghFetch('src/content/profil-singkat/utama.md');
+        if (!res.ok) return;
+        const data = await res.json();
+        const raw = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+        const { meta } = parseMarkdown(raw);
+        document.getElementById('ps-sha').value = data.sha;
+        document.getElementById('ps-judul').value = meta.judul || '';
+        document.getElementById('ps-subjudul').value = meta.subjudul || '';
+        document.getElementById('ps-desk1').value = meta.deskripsi1 || '';
+        document.getElementById('ps-desk2').value = meta.deskripsi2 || '';
+        document.getElementById('ps-foto').value = meta.foto || '';
+        document.getElementById('ps-tahun').value = meta.tahunBerdiri || 1980;
+        document.getElementById('ps-akreditasi').value = meta.akreditasi || '';
+        document.getElementById('ps-npsn').value = meta.npsn || '';
+        document.getElementById('ps-nsm').value = meta.nsm || '';
+        document.getElementById('ps-lokasi').value = meta.lokasi || '';
+        document.getElementById('ps-tagline').value = meta.tagline || '';
+        document.getElementById('ps-taglinesub').value = meta.taglineSub || '';
+        document.getElementById('ps-b1icon').value = meta.badge1Icon || '';
+        document.getElementById('ps-b1title').value = meta.badge1Title || '';
+        document.getElementById('ps-b1desc').value = meta.badge1Desc || '';
+        document.getElementById('ps-b2icon').value = meta.badge2Icon || '';
+        document.getElementById('ps-b2title').value = meta.badge2Title || '';
+        document.getElementById('ps-b2desc').value = meta.badge2Desc || '';
+        document.getElementById('ps-b3icon').value = meta.badge3Icon || '';
+        document.getElementById('ps-b3title').value = meta.badge3Title || '';
+        document.getElementById('ps-b3desc').value = meta.badge3Desc || '';
+        document.getElementById('ps-b4icon').value = meta.badge4Icon || '';
+        document.getElementById('ps-b4title').value = meta.badge4Title || '';
+        document.getElementById('ps-b4desc').value = meta.badge4Desc || '';
+      } catch (e) {}
+    }
+
+    async function saveProfilSingkat() {
+      const judul = document.getElementById('ps-judul').value.trim();
+      if (!judul) { showAlert('Judul tidak boleh kosong.', false); return; }
+
+      const meta = {
+        judul,
+        subjudul: document.getElementById('ps-subjudul').value.trim(),
+        deskripsi1: document.getElementById('ps-desk1').value.trim(),
+        deskripsi2: document.getElementById('ps-desk2').value.trim(),
+        foto: document.getElementById('ps-foto').value.trim(),
+        tahunBerdiri: parseInt(document.getElementById('ps-tahun').value || '1980', 10),
+        npsn: document.getElementById('ps-npsn').value.trim(),
+        nsm: document.getElementById('ps-nsm').value.trim(),
+        akreditasi: document.getElementById('ps-akreditasi').value.trim(),
+        lokasi: document.getElementById('ps-lokasi').value.trim(),
+        tagline: document.getElementById('ps-tagline').value.trim(),
+        taglineSub: document.getElementById('ps-taglinesub').value.trim(),
+        badge1Icon: document.getElementById('ps-b1icon').value.trim(),
+        badge1Title: document.getElementById('ps-b1title').value.trim(),
+        badge1Desc: document.getElementById('ps-b1desc').value.trim(),
+        badge2Icon: document.getElementById('ps-b2icon').value.trim(),
+        badge2Title: document.getElementById('ps-b2title').value.trim(),
+        badge2Desc: document.getElementById('ps-b2desc').value.trim(),
+        badge3Icon: document.getElementById('ps-b3icon').value.trim(),
+        badge3Title: document.getElementById('ps-b3title').value.trim(),
+        badge3Desc: document.getElementById('ps-b3desc').value.trim(),
+        badge4Icon: document.getElementById('ps-b4icon').value.trim(),
+        badge4Title: document.getElementById('ps-b4title').value.trim(),
+        badge4Desc: document.getElementById('ps-b4desc').value.trim(),
+      };
+      const md = buildMarkdown(meta, '');
+
+      try {
+        await ghSave('src/content/profil-singkat/utama.md', md, 'Update profil singkat');
+        showAlert('Profil singkat berhasil disimpan.', true);
+        await loadProfilSingkat();
+      } catch (e) {
+        showAlert(e.message, false);
+      }
+    }
+
+    // ============================================================
+    // 10. TESTIMONIAL FUNCTIONS (CRUD)
+    // ============================================================
+    async function fetchRemoteTestimonial() {
+      try {
+        const res = await ghFetch('src/content/testimonial');
+        if (!res.ok) return;
+        const files = await res.json();
+        testimonialItems = [];
+        for (const f of files.filter(x => x.name.endsWith('.md'))) {
+          const r2 = await ghFetch(`src/content/testimonial/${f.name}`);
+          if (!r2.ok) continue;
+          const data = await r2.json();
+          const raw = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+          const { meta } = parseMarkdown(raw);
+          testimonialItems.push({ slug: f.name.replace('.md', ''), sha: data.sha, meta });
+        }
+        renderTestimonialCards();
+      } catch (e) {}
+    }
+
+    function renderTestimonialCards() {
+      const container = document.getElementById('testimonial-list');
+      if (!container) return;
+      if (testimonialItems.length === 0) {
+        container.innerHTML = '<div class="col-span-full py-10 text-center text-slate-400 font-bold">Belum ada testimonial.</div>';
+        return;
+      }
+      testimonialItems.sort((a, b) => (a.meta.order || 0) - (b.meta.order || 0));
+      container.innerHTML = testimonialItems.map(item => `
+        <div class="rounded-2xl bg-white border-2 border-slate-200 p-5 shadow-sm hover:border-emerald-500 transition cursor-pointer" onclick="startEditTestimonial('${escapeHtml(item.slug)}')">
+          <div class="flex text-amber-400 text-sm mb-2">${'★'.repeat(item.meta.rating || 5)}</div>
+          <p class="text-sm text-slate-600 italic line-clamp-3">"${escapeHtml(item.meta.text || '')}"</p>
+          <div class="mt-3 pt-3 border-t border-slate-100">
+            <span class="text-2xl">${item.meta.avatar || '⭐'}</span>
+            <p class="font-bold text-slate-800 text-sm mt-1">${escapeHtml(item.meta.name || '')}</p>
+            <p class="text-xs text-slate-500">${escapeHtml(item.meta.role || '')}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function startEditTestimonial(slug) {
+      const box = document.getElementById('testimonial-editor-box');
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+      const btnDel = document.getElementById('btn-tst-delete');
+
+      if (slug === 'new') {
+        document.getElementById('testimonial-form-title').textContent = 'Tambah Testimonial';
+        document.getElementById('tst-slug').value = '';
+        document.getElementById('tst-sha').value = '';
+        document.getElementById('tst-name').value = '';
+        document.getElementById('tst-role').value = '';
+        document.getElementById('tst-text').value = '';
+        document.getElementById('tst-avatar').value = '⭐';
+        document.getElementById('tst-rating').value = 5;
+        document.getElementById('tst-order').value = testimonialItems.length + 1;
+        btnDel.classList.add('hidden');
+        return;
+      }
+
+      document.getElementById('testimonial-form-title').textContent = `Ubah Testimonial: ${slug}`;
+      document.getElementById('tst-slug').value = slug;
+      document.getElementById('tst-sha').value = '';
+      btnDel.classList.remove('hidden');
+
+      const cached = testimonialItems.find(x => x.slug === slug);
+      if (cached) {
+        document.getElementById('tst-name').value = cached.meta.name || '';
+        document.getElementById('tst-role').value = cached.meta.role || '';
+        document.getElementById('tst-text').value = cached.meta.text || '';
+        document.getElementById('tst-avatar').value = cached.meta.avatar || '⭐';
+        document.getElementById('tst-rating').value = cached.meta.rating || 5;
+        document.getElementById('tst-order').value = cached.meta.order || 1;
+        document.getElementById('tst-sha').value = cached.sha || '';
+      }
+      if (currentToken) {
+        try {
+          const res = await ghFetch(`src/content/testimonial/${slug}.md`);
+          if (res.ok) {
+            const data = await res.json();
+            const { meta } = parseMarkdown(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
+            document.getElementById('tst-name').value = meta.name || '';
+            document.getElementById('tst-role').value = meta.role || '';
+            document.getElementById('tst-text').value = meta.text || '';
+            document.getElementById('tst-avatar').value = meta.avatar || '⭐';
+            document.getElementById('tst-rating').value = meta.rating || 5;
+            document.getElementById('tst-order').value = meta.order || 1;
+            document.getElementById('tst-sha').value = data.sha;
+          }
+        } catch (e) { showAlert('Gagal memuat testimonial: ' + e.message, false); }
+      }
+    }
+
+    function closeTestimonialEditor() {
+      document.getElementById('testimonial-editor-box').classList.add('hidden');
+    }
+
+    async function saveTestimonial() {
+      let slug = document.getElementById('tst-slug').value.trim();
+      const name = document.getElementById('tst-name').value.trim();
+      const role = document.getElementById('tst-role').value.trim();
+      const text = document.getElementById('tst-text').value.trim();
+      const avatar = document.getElementById('tst-avatar').value.trim() || '⭐';
+      const rating = parseInt(document.getElementById('tst-rating').value || '5', 10);
+      const order = parseInt(document.getElementById('tst-order').value || '1', 10);
+      const sha = document.getElementById('tst-sha').value;
+
+      if (!name) { showAlert('Nama tidak boleh kosong.', false); return; }
+      if (!text) { showAlert('Teks testimonial tidak boleh kosong.', false); return; }
+      if (!slug) slug = slugify(name);
+
+      const meta = { name, role, text, avatar, rating, order };
+      const md = buildMarkdown(meta, '');
+
+      try {
+        await ghSave(`src/content/testimonial/${slug}.md`, md, `Update testimonial: ${name}`, sha || undefined);
+        showAlert('Testimonial berhasil disimpan.', true);
+        closeTestimonialEditor();
+        await fetchRemoteTestimonial();
+      } catch (e) {
+        showAlert(e.message, false);
+      }
+    }
+
+    function confirmDeleteTestimonial() {
+      const slug = document.getElementById('tst-slug').value;
+      if (!slug || slug === 'new') return;
+      if (!confirm('Hapus testimonial ini?')) return;
+      deleteTestimonial(slug);
+    }
+
+    async function deleteTestimonial(slug) {
+      const sha = document.getElementById('tst-sha').value;
+      try {
+        await ghDelete(`src/content/testimonial/${slug}.md`, `Hapus testimonial: ${slug}`, sha);
+        showAlert('Testimonial berhasil dihapus.', true);
+        closeTestimonialEditor();
+        await fetchRemoteTestimonial();
+      } catch (e) {
+        showAlert(e.message, false);
+      }
+    }
+
+    // ============================================================
+    // 11. APLIKASI LAYANAN FUNCTIONS (CRUD)
+    // ============================================================
+    async function fetchRemoteAplikasi() {
+      try {
+        const res = await ghFetch('src/content/aplikasi-layanan');
+        if (!res.ok) return;
+        const files = await res.json();
+        aplikasiItems = [];
+        for (const f of files.filter(x => x.name.endsWith('.md'))) {
+          const r2 = await ghFetch(`src/content/aplikasi-layanan/${f.name}`);
+          if (!r2.ok) continue;
+          const data = await r2.json();
+          const raw = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+          const { meta } = parseMarkdown(raw);
+          aplikasiItems.push({ slug: f.name.replace('.md', ''), sha: data.sha, meta });
+        }
+        renderAplikasiCards();
+      } catch (e) {}
+    }
+
+    function renderAplikasiCards() {
+      const container = document.getElementById('aplikasi-list');
+      if (!container) return;
+      if (aplikasiItems.length === 0) {
+        container.innerHTML = '<div class="col-span-full py-10 text-center text-slate-400 font-bold">Belum ada aplikasi layanan.</div>';
+        return;
+      }
+      aplikasiItems.sort((a, b) => (a.meta.order || 0) - (b.meta.order || 0));
+      container.innerHTML = aplikasiItems.map(item => `
+        <div class="rounded-2xl bg-white border-2 border-slate-200 p-5 shadow-sm hover:border-emerald-500 transition cursor-pointer" onclick="startEditAplikasi('${escapeHtml(item.slug)}')">
+          <div class="text-3xl mb-2">${item.meta.icon || '🔗'}</div>
+          <span class="inline-block rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-bold text-slate-700 mb-1">${escapeHtml(item.meta.badge || '')}</span>
+          <h4 class="font-bold text-slate-800 text-sm">${escapeHtml(item.meta.name || '')}</h4>
+          <p class="text-xs text-slate-500 mt-1 line-clamp-2">${escapeHtml(item.meta.desc || '')}</p>
+          <p class="text-xs text-blue-600 mt-2 truncate">${escapeHtml(item.meta.url || '')}</p>
+        </div>
+      `).join('');
+    }
+
+    async function startEditAplikasi(slug) {
+      const box = document.getElementById('aplikasi-editor-box');
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+      const btnDel = document.getElementById('btn-app-delete');
+
+      if (slug === 'new') {
+        document.getElementById('aplikasi-form-title').textContent = 'Tambah Aplikasi';
+        document.getElementById('app-slug').value = '';
+        document.getElementById('app-sha').value = '';
+        document.getElementById('app-name').value = '';
+        document.getElementById('app-fullname').value = '';
+        document.getElementById('app-url').value = '';
+        document.getElementById('app-desc').value = '';
+        document.getElementById('app-icon').value = '🔗';
+        document.getElementById('app-badge').value = '';
+        document.getElementById('app-order').value = aplikasiItems.length + 1;
+        btnDel.classList.add('hidden');
+        return;
+      }
+
+      document.getElementById('aplikasi-form-title').textContent = `Ubah Aplikasi: ${slug}`;
+      document.getElementById('app-slug').value = slug;
+      document.getElementById('app-sha').value = '';
+      btnDel.classList.remove('hidden');
+
+      const cached = aplikasiItems.find(x => x.slug === slug);
+      if (cached) {
+        document.getElementById('app-name').value = cached.meta.name || '';
+        document.getElementById('app-fullname').value = cached.meta.fullName || '';
+        document.getElementById('app-url').value = cached.meta.url || '';
+        document.getElementById('app-desc').value = cached.meta.desc || '';
+        document.getElementById('app-icon').value = cached.meta.icon || '🔗';
+        document.getElementById('app-badge').value = cached.meta.badge || '';
+        document.getElementById('app-order').value = cached.meta.order || 1;
+        document.getElementById('app-sha').value = cached.sha || '';
+      }
+      if (currentToken) {
+        try {
+          const res = await ghFetch(`src/content/aplikasi-layanan/${slug}.md`);
+          if (res.ok) {
+            const data = await res.json();
+            const { meta } = parseMarkdown(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
+            document.getElementById('app-name').value = meta.name || '';
+            document.getElementById('app-fullname').value = meta.fullName || '';
+            document.getElementById('app-url').value = meta.url || '';
+            document.getElementById('app-desc').value = meta.desc || '';
+            document.getElementById('app-icon').value = meta.icon || '🔗';
+            document.getElementById('app-badge').value = meta.badge || '';
+            document.getElementById('app-order').value = meta.order || 1;
+            document.getElementById('app-sha').value = data.sha;
+          }
+        } catch (e) { showAlert('Gagal memuat aplikasi: ' + e.message, false); }
+      }
+    }
+
+    function closeAplikasiEditor() {
+      document.getElementById('aplikasi-editor-box').classList.add('hidden');
+    }
+
+    async function saveAplikasi() {
+      let slug = document.getElementById('app-slug').value.trim();
+      const name = document.getElementById('app-name').value.trim();
+      const fullName = document.getElementById('app-fullname').value.trim();
+      const url = document.getElementById('app-url').value.trim();
+      const desc = document.getElementById('app-desc').value.trim();
+      const icon = document.getElementById('app-icon').value.trim() || '🔗';
+      const badge = document.getElementById('app-badge').value.trim();
+      const order = parseInt(document.getElementById('app-order').value || '1', 10);
+      const sha = document.getElementById('app-sha').value;
+
+      if (!name) { showAlert('Nama tidak boleh kosong.', false); return; }
+      if (!url) { showAlert('URL tidak boleh kosong.', false); return; }
+      if (!slug) slug = slugify(name);
+
+      const meta = { name, fullName, desc, icon, url, badge, order };
+      const md = buildMarkdown(meta, '');
+
+      try {
+        await ghSave(`src/content/aplikasi-layanan/${slug}.md`, md, `Update aplikasi: ${name}`, sha || undefined);
+        showAlert('Aplikasi berhasil disimpan.', true);
+        closeAplikasiEditor();
+        await fetchRemoteAplikasi();
+      } catch (e) {
+        showAlert(e.message, false);
+      }
+    }
+
+    function confirmDeleteAplikasi() {
+      const slug = document.getElementById('app-slug').value;
+      if (!slug || slug === 'new') return;
+      if (!confirm('Hapus aplikasi ini?')) return;
+      deleteAplikasi(slug);
+    }
+
+    async function deleteAplikasi(slug) {
+      const sha = document.getElementById('app-sha').value;
+      try {
+        await ghDelete(`src/content/aplikasi-layanan/${slug}.md`, `Hapus aplikasi: ${slug}`, sha);
+        showAlert('Aplikasi berhasil dihapus.', true);
+        closeAplikasiEditor();
+        await fetchRemoteAplikasi();
+      } catch (e) {
+        showAlert(e.message, false);
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Jalankan Saat Halaman Terbuka
+    window.addEventListener('DOMContentLoaded', () => {
+      initAuth();
+    });
+  </script>
+</body>
+</html>

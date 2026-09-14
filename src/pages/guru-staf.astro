@@ -1,0 +1,76 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHeader from '../components/PageHeader.astro'
+import { getCollection, render } from 'astro:content'
+
+const halaman = await getCollection('halaman')
+const page = halaman.find((h) => h.id === 'guru-staf')!
+const { Content } = await render(page)
+
+// Data diambil dari collection "guru-staf" agar bisa dikelola dari panel admin.
+const guru = (await getCollection('guruStaf')).sort(
+  (a, b) => a.data.order - b.data.order,
+)
+const pendidik = guru.filter((p) => p.data.grup === 'pendidik')
+const tendik = guru.filter((p) => p.data.grup === 'tendik')
+
+const inisial = (nama) =>
+  nama
+    .split(' ')
+    .slice(0, 2)
+    .map((k) => k[0])
+    .join('')
+
+const fotoSrc = (f) => `/images/guru-staf/${f}`
+---
+
+<Layout title="Guru & Staf — MIN 2 Kulon Progo">
+  <PageHeader title="Guru & Tenaga Kependidikan" />
+  <div class="mx-auto max-w-6xl px-4 py-12">
+    <div class="max-w-3xl [&_p]:leading-relaxed [&_p]:text-slate-600">
+      <Content />
+    </div>
+
+    <h2 class="mt-12 text-2xl font-bold text-biru-900">Pendidik</h2>
+    <div class="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      {pendidik.map((p) => (
+        <div class="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white text-center shadow-sm">
+          {p.data.foto ? (
+            <div class="aspect-[3/4] w-full bg-slate-100">
+              <img src={fotoSrc(p.data.foto)} alt={`Foto ${p.data.nama}`} class="size-full object-cover" loading="lazy" />
+            </div>
+          ) : (
+            <div class="flex aspect-[3/4] w-full items-center justify-center bg-biru-50 px-4">
+              <span class="text-5xl font-extrabold text-biru-700">{inisial(p.data.nama)}</span>
+            </div>
+          )}
+          <div class="flex flex-1 flex-col justify-center p-3">
+            <p class="font-semibold leading-snug text-slate-800">{p.data.nama}</p>
+            {p.data.jabatan ? <p class="mt-1 text-xs font-medium text-hijau-700">{p.data.jabatan}</p> : null}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <h2 class="mt-12 text-2xl font-bold text-biru-900">Tenaga Kependidikan (Tata Usaha)</h2>
+    <div class="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      {tendik.map((p) => (
+        <div class="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white text-center shadow-sm">
+          {p.data.foto ? (
+            <div class="aspect-[3/4] w-full bg-slate-100">
+              <img src={fotoSrc(p.data.foto)} alt={`Foto ${p.data.nama}`} class="size-full object-cover" loading="lazy" />
+            </div>
+          ) : (
+            <div class="flex aspect-[3/4] w-full items-center justify-center bg-biru-50 px-4">
+              <span class="text-5xl font-extrabold text-biru-700">{inisial(p.data.nama)}</span>
+            </div>
+          )}
+          <div class="flex flex-1 flex-col justify-center p-3">
+            <p class="font-semibold leading-snug text-slate-800">{p.data.nama}</p>
+            {p.data.jabatan ? <p class="mt-1 text-xs font-medium text-hijau-700">{p.data.jabatan}</p> : null}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</Layout>

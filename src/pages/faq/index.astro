@@ -1,0 +1,31 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import PageHeader from '../../components/PageHeader.astro'
+import { getCollection, render } from 'astro:content'
+
+const faq = (await getCollection('faq')).sort((a, b) => a.data.order - b.data.order)
+const items = await Promise.all(faq.map(async (f) => ({ ...f, Content: (await render(f)).Content })))
+---
+
+<Layout title="FAQ — MIN 2 Kulon Progo">
+  <PageHeader title="Pertanyaan yang Sering Ditanyakan" />
+  <div class="mx-auto max-w-3xl px-4 py-12">
+    {items.length > 0 ? (
+      <div class="space-y-4">
+        {items.map((item) => (
+          <details class="group rounded-xl border border-slate-200 bg-white shadow-sm open:border-hijau-300">
+            <summary class="flex cursor-pointer items-center justify-between gap-3 p-5 font-semibold text-slate-800">
+              {item.data.question}
+              <span class="shrink-0 text-hijau-600 transition group-open:rotate-45">＋</span>
+            </summary>
+            <div class="px-5 pb-5 [&_p]:leading-relaxed [&_p]:text-slate-600">
+              <item.Content />
+            </div>
+          </details>
+        ))}
+      </div>
+    ) : (
+      <p class="text-center text-slate-500">Belum ada pertanyaan.</p>
+    )}
+  </div>
+</Layout>

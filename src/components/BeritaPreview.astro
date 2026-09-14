@@ -1,0 +1,100 @@
+---
+// BeritaPreview.astro — Berita Terkini ala SD Muh Sapen
+import { getCollection } from 'astro:content'
+import { formatDate } from '../lib/utils'
+
+const berita = (await getCollection('berita'))
+  .filter((b) => !b.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+---
+
+<section class="my-16 sm:my-24 py-16 sm:py-20 bg-orange-50/40 border-y border-orange-100/60">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="text-center max-w-2xl mx-auto">
+      <span class="inline-block rounded-full bg-oren/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-oren mb-3">
+        Kabar Madrasah
+      </span>
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-dark-blue">
+        Berita Terkini
+      </h2>
+      <div class="mt-3 h-1.5 w-24 bg-dark-blue mx-auto rounded-full"></div>
+      <p class="mt-3 text-slate-600 text-sm sm:text-base">
+        Informasi kegiatan, prestasi siswa, pengumuman madrasah, dan kabar terkini seputar MIN 2 Kulon Progo.
+      </p>
+    </div>
+
+    <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {berita.slice(0, 3).map((item) => {
+        const d = new Date(item.data.date);
+        const day = d.getDate();
+        const monthName = d.toLocaleDateString('id-ID', { month: 'short' });
+        const year = d.getFullYear();
+
+        return (
+          <a
+            href={`/berita/${item.id}`}
+            class="group overflow-hidden rounded-2xl bg-white border border-slate-200/80 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl flex flex-col justify-between"
+          >
+            <div>
+              <div class="relative aspect-16/10 w-full overflow-hidden bg-slate-100">
+                {item.data.cover ? (
+                  <img
+                    src={item.data.cover}
+                    alt={item.data.title}
+                    class="size-full object-cover transition duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div class="flex size-full items-center justify-center bg-hijau-800 text-3xl text-white">
+                    📰
+                  </div>
+                )}
+
+                <!-- Floating Date Badge (ala Sapen) -->
+                <div class="absolute top-3 left-3 rounded-xl bg-white/95 px-3 py-1.5 text-center shadow-md backdrop-blur-sm border border-slate-100">
+                  <span class="block text-lg font-black leading-none text-dark-blue">{day}</span>
+                  <span class="block text-[10px] font-bold uppercase tracking-wider text-oren">{monthName} {year}</span>
+                </div>
+              </div>
+
+              <div class="p-6">
+                <div class="flex items-center gap-2 text-xs text-slate-400 font-medium mb-2">
+                  <span>📅 {formatDate(item.data.date)}</span>
+                  <span>•</span>
+                  <span>MIN 2 KP</span>
+                </div>
+
+                <h3 class="text-lg font-bold text-slate-800 group-hover:text-hijau-800 transition line-clamp-2 leading-snug">
+                  {item.data.title}
+                </h3>
+
+                {item.data.excerpt && (
+                  <p class="mt-3 line-clamp-2 text-sm text-slate-600 leading-relaxed">
+                    {item.data.excerpt}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div class="px-6 pb-6 pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-hijau-700 group-hover:text-oren transition">
+              <span>Baca Selengkapnya</span>
+              <span>→</span>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+
+    <div class="mt-12 text-center">
+      <a
+        href="/berita"
+        class="inline-flex items-center gap-2 rounded-full bg-dark-blue px-7 py-3.5 text-sm font-bold text-white shadow-md transition hover:bg-hijau-900 hover:gap-3"
+      >
+        <span>Lihat Semua Berita</span>
+        <span>→</span>
+      </a>
+    </div>
+
+  </div>
+</section>

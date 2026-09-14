@@ -1,0 +1,182 @@
+---
+// HeroSlider.astro — Carousel Banner dengan Gambar & Konten Dinamis
+import { getCollection } from 'astro:content'
+
+const allSlides = await getCollection('carousel')
+const slides = allSlides.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
+
+const stats = (await getCollection('statistik'))
+  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
+  .map((x) => x.data)
+---
+
+<div class="relative w-full overflow-hidden bg-dark-blue text-white">
+  <!-- Slides Container -->
+  <div id="hero-carousel" class="relative min-h-[520px] w-full sm:min-h-[580px] md:min-h-[620px] lg:min-h-[660px]">
+
+    {slides.map((slide, index) => {
+      const { badge, subtitle, title, description, image, buttonPrimaryText, buttonPrimaryLink, buttonSecondaryText, buttonSecondaryLink } = slide.data
+      return (
+        <div
+          class={`hero-slide absolute inset-0 flex items-center transition-all duration-700 ease-in-out ${index === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+          data-index={index}
+        >
+          <!-- Background Image with High-Quality Overlay -->
+          <div class="absolute inset-0 z-0">
+            <img
+              src={image || '/images/qngqw.jpg'}
+              alt={title}
+              class="size-full object-cover object-center transform scale-100 transition duration-1000"
+              onerror="this.src='/images/galeri/banner-1.jpg'"
+            />
+            <!-- Gradient Overlay: Gelap di kiri agar teks sangat terbaca, gambar tetap tampak jelas di kanan -->
+            <div class="absolute inset-0 bg-gradient-to-r from-dark-blue/95 via-dark-blue/85 to-dark-blue/60 z-10"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-blue via-transparent to-black/30 z-10"></div>
+          </div>
+
+          <!-- Slide Content -->
+          <div class="container relative z-20 mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+            <div class="max-w-3xl">
+              {badge && (
+                <div class="inline-flex items-center gap-2 rounded-full bg-kuning-400/20 border border-kuning-400/50 px-4 py-1.5 text-xs sm:text-sm font-bold text-kuning-400 mb-4 backdrop-blur-md shadow-sm">
+                  {badge}
+                </div>
+              )}
+              {subtitle && (
+                <h2 class="text-lg sm:text-2xl md:text-3xl font-bold text-emerald-300 tracking-wide">
+                  {subtitle}
+                </h2>
+              )}
+              <h1 class="mt-2 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-white drop-shadow-md">
+                {title}
+              </h1>
+              <p class="mt-4 text-base sm:text-lg md:text-xl text-slate-100 leading-relaxed max-w-2xl drop-shadow">
+                {description}
+              </p>
+
+              <div class="mt-8 flex flex-wrap items-center gap-4">
+                {buttonPrimaryText && (
+                  <a
+                    href={buttonPrimaryLink || '#'}
+                    class="rounded-full bg-kuning-400 px-7 py-3.5 text-sm sm:text-base font-extrabold text-hijau-950 shadow-xl shadow-kuning-400/20 transition hover:bg-kuning-500 hover:scale-105"
+                  >
+                    {buttonPrimaryText}
+                  </a>
+                )}
+                {buttonSecondaryText && (
+                  <a
+                    href={buttonSecondaryLink || '#'}
+                    class="rounded-full border-2 border-white/60 bg-dark-blue/60 px-7 py-3.5 text-sm sm:text-base font-bold text-white backdrop-blur-md transition hover:bg-white hover:text-dark-blue"
+                  >
+                    {buttonSecondaryText}
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    })}
+
+  </div>
+
+  <!-- Arrow Controls -->
+  <button id="hero-prev" aria-label="Slide sebelumnya" class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 flex size-12 items-center justify-center rounded-full bg-dark-blue/80 text-white border border-white/30 backdrop-blur-md transition hover:bg-kuning-400 hover:text-hijau-950 hover:border-kuning-400 focus:outline-none shadow-lg">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+  </button>
+  <button id="hero-next" aria-label="Slide berikutnya" class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 flex size-12 items-center justify-center rounded-full bg-dark-blue/80 text-white border border-white/30 backdrop-blur-md transition hover:bg-kuning-400 hover:text-hijau-950 hover:border-kuning-400 focus:outline-none shadow-lg">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+  </button>
+
+  <!-- Dots Indicator -->
+  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
+    {slides.map((_, idx) => (
+      <button
+        class={`hero-dot size-3.5 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-kuning-400 w-9' : 'bg-white/50'}`}
+        data-index={idx}
+        aria-label={`Slide ${idx + 1}`}
+      ></button>
+    ))}
+  </div>
+</div>
+
+<!-- Quick Stats Bar (Floating Bar ala Sapen) -->
+<div class="relative z-30 -mt-8 sm:-mt-10 mx-auto max-w-5xl px-4">
+  <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 rounded-2xl bg-white p-4 sm:p-6 shadow-xl border border-slate-100 text-center">
+    {stats.map((s, idx) => (
+      <div class={`p-2 ${idx < stats.length - 1 ? 'border-r border-slate-100' : ''}`}>
+        <p class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-hijau-800">{s.value}</p>
+        <p class="mt-1 text-xs sm:text-sm font-bold text-slate-600">{s.label}</p>
+      </div>
+    ))}
+  </div>
+</div>
+
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('.hero-dot');
+  const total = slides.length;
+  let interval: any = null;
+
+  function showSlide(index: number) {
+    if (total === 0) return;
+    currentSlide = (index + total) % total;
+    slides.forEach((s, idx) => {
+      if (idx === currentSlide) {
+        s.classList.remove('opacity-0', 'pointer-events-none');
+        s.classList.add('opacity-100');
+      } else {
+        s.classList.remove('opacity-100');
+        s.classList.add('opacity-0', 'pointer-events-none');
+      }
+    });
+
+    dots.forEach((d, idx) => {
+      if (idx === currentSlide) {
+        d.classList.remove('bg-white/50');
+        d.classList.add('bg-kuning-400', 'w-9');
+      } else {
+        d.classList.remove('bg-kuning-400', 'w-9');
+        d.classList.add('bg-white/50');
+      }
+    });
+  }
+
+  function startAutoplay() {
+    stopAutoplay();
+    interval = setInterval(() => {
+      showSlide(currentSlide + 1);
+    }, 6000);
+  }
+
+  function stopAutoplay() {
+    if (interval) clearInterval(interval);
+  }
+
+  document.getElementById('hero-next')?.addEventListener('click', () => {
+    showSlide(currentSlide + 1);
+    startAutoplay();
+  });
+
+  document.getElementById('hero-prev')?.addEventListener('click', () => {
+    showSlide(currentSlide - 1);
+    startAutoplay();
+  });
+
+  dots.forEach(d => {
+    d.addEventListener('click', (e: any) => {
+      const idx = parseInt(e.currentTarget.getAttribute('data-index') || '0', 10);
+      showSlide(idx);
+      startAutoplay();
+    });
+  });
+
+  const carousel = document.getElementById('hero-carousel');
+  carousel?.addEventListener('mouseenter', stopAutoplay);
+  carousel?.addEventListener('mouseleave', startAutoplay);
+
+  // Inisialisasi
+  showSlide(0);
+  startAutoplay();
+</script>

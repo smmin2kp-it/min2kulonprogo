@@ -1,0 +1,25 @@
+# build output
+dist/
+# generated types
+.astro/
+# dependencies
+node_modules/
+# logs
+npm-debug.log*
+# environment variables
+.env
+.env.production
+.env.admin
+.dev.vars
+# OS
+.DS_Store
+Thumbs.db
+# astro
+.studio/
+
+# wrangler / cloudflare local state
+.wrangler/
+
+
+session-export-*/
+test-results/
