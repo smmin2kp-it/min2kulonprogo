@@ -140,4 +140,16 @@ const carousel = defineCollection({
   }),
 })
 
-export const collections = { carousel, berita, galeri, halaman, faq, kurikulum, keunggulan, statistik, guruStaf, aplikasiLayanan, profilSingkat }
+const prestasi = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/prestasi' }),
+  schema: z.object({
+    title: z.string(),
+    tahun: z.number(),
+    kategori: z.string().optional().default('Umum'),
+    peringkat: z.string().optional().default(''),
+    tingkat: z.string().optional().default(''),
+    order: z.number().optional().default(0),
+  }),
+})
+
+export const collections = { carousel, berita, galeri, halaman, faq, kurikulum, keunggulan, statistik, guruStaf, aplikasiLayanan, profilSingkat, prestasi }

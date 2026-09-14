@@ -1,0 +1,61 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHeader from '../components/PageHeader.astro'
+import { getCollection } from 'astro:content'
+
+const allPrestasi = await getCollection('prestasi')
+const sorted = allPrestasi.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
+
+// Group by tahun descending
+const byTahun = new Map<number, typeof sorted>()
+for (const p of sorted) {
+  const t = p.data.tahun
+  if (!byTahun.has(t)) byTahun.set(t, [])
+  byTahun.get(t)!.push(p)
+}
+const tahunList = [...byTahun.keys()].sort((a, b) => b - a)
+---
+
+<Layout title="Prestasi — MIN 2 Kulon Progo">
+  <PageHeader title="Prestasi Madrasah" />
+  <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+
+    {tahunList.length === 0 && (
+      <p class="text-center text-slate-500 py-16 text-lg">Belum ada data prestasi.</p>
+    )}
+
+    {tahunList.map(tahun => (
+      <div class="mb-12">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="flex items-center justify-center size-12 rounded-2xl bg-kuning-400 text-hijau-950 font-black text-lg shadow">{tahun}</span>
+          <h2 class="text-2xl font-extrabold text-dark-blue">Tahun {tahun}</h2>
+          <span class="ml-auto rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">{byTahun.get(tahun)!.length} prestasi</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {byTahun.get(tahun)!.map(p => (
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-emerald-400 transition">
+              <div class="flex items-start gap-3">
+                <span class="flex size-10 items-center justify-center rounded-xl bg-amber-100 text-amber-700 text-lg shrink-0">🏆</span>
+                <div class="min-w-0">
+                  <h3 class="font-bold text-slate-800 text-sm leading-snug">{p.data.title}</h3>
+                  <div class="mt-2 flex flex-wrap gap-1.5">
+                    {p.data.peringkat && (
+                      <span class="rounded-lg bg-emerald-100 px-2 py-0.5 text-[11px] font-bold text-emerald-800">{p.data.peringkat}</span>
+                    )}
+                    {p.data.tingkat && (
+                      <span class="rounded-lg bg-blue-100 px-2 py-0.5 text-[11px] font-bold text-blue-800">{p.data.tingkat}</span>
+                    )}
+                    {p.data.kategori && (
+                      <span class="rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-600">{p.data.kategori}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+
+  </section>
+</Layout>
