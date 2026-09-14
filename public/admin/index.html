@@ -147,9 +147,6 @@
         <button onclick="switchTab('guru-staf')" id="tab-guru-staf" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
           <span>Guru &amp; Staf</span>
         </button>
-        <button onclick="switchTab('testimonial')" id="tab-testimonial" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
-          <span>Testimonial</span>
-        </button>
         <button onclick="switchTab('aplikasi')" id="tab-aplikasi" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
           <span>Aplikasi</span>
         </button>
@@ -1013,58 +1010,6 @@
       </div>
     </div>
 
-    <!-- ========== VIEW TESTIMONIAL ========== -->
-    <div id="view-testimonial" class="tab-view hidden container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
-      <div class="bg-white rounded-3xl shadow-lg border border-slate-200 p-6 sm:p-10">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <h2 class="text-2xl font-extrabold text-slate-800">📝 Kelola Testimonial</h2>
-          <button onclick="startEditTestimonial('new')" class="bg-hijau-700 hover:bg-hijau-800 text-white font-bold py-3 px-6 rounded-xl transition">+ Tambah</button>
-        </div>
-
-        <div id="testimonial-editor-box" class="hidden mb-8 p-6 bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl">
-          <h3 id="testimonial-form-title" class="text-lg font-extrabold text-slate-800 mb-4">Tambah Testimonial</h3>
-          <input type="hidden" id="tst-slug" />
-          <input type="hidden" id="tst-sha" />
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label class="block text-sm font-bold text-slate-600 mb-1">Nama</label>
-              <input id="tst-name" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="Nama lengkap" />
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-slate-600 mb-1">Peran</label>
-              <input id="tst-role" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="Wali Murid / Alumni" />
-            </div>
-          </div>
-          <div class="mb-4">
-            <label class="block text-sm font-bold text-slate-600 mb-1">Testimonial</label>
-            <textarea id="tst-text" rows="3" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="Isi testimoni..."></textarea>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-            <div>
-              <label class="block text-sm font-bold text-slate-600 mb-1">Avatar (emoji)</label>
-              <input id="tst-avatar" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" placeholder="👩‍🏫" />
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-slate-600 mb-1">Rating (1-5)</label>
-              <input id="tst-rating" type="number" min="1" max="5" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" value="5" />
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-slate-600 mb-1">Urutan</label>
-              <input id="tst-order" type="number" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-hijau-500 outline-none" value="1" />
-            </div>
-          </div>
-          <div class="flex gap-3">
-            <button onclick="saveTestimonial()" class="bg-hijau-700 hover:bg-hijau-800 text-white font-bold py-2 px-6 rounded-xl transition">Simpan</button>
-            <button onclick="closeTestimonialEditor()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-6 rounded-xl transition">Batal</button>
-            <button id="btn-tst-delete" onclick="confirmDeleteTestimonial()" class="hidden ml-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-xl transition">Hapus</button>
-          </div>
-        </div>
-
-        <div id="testimonial-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <!-- Diisi lewat JS -->
-        </div>
-      </div>
-    </div>
 
     <!-- ========== VIEW APLIKASI LAYANAN ========== -->
     <div id="view-aplikasi" class="tab-view hidden container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
@@ -1304,7 +1249,6 @@
     let statistikItems = [];
     let guruItems = [];
     let guruFotoList = [];
-    let testimonialItems = [];
     let aplikasiItems = [];
 
     // --- TAB SWITCHER ---
@@ -1478,7 +1422,6 @@
       fetchRemoteKeunggulan();
       fetchRemoteStatistik();
       fetchRemoteGuru();
-      fetchRemoteTestimonial();
       fetchRemoteAplikasi();
       loadProfilSingkat();
     }
@@ -3178,150 +3121,6 @@
     }
 
     // ============================================================
-    // 10. TESTIMONIAL FUNCTIONS (CRUD)
-    // ============================================================
-    async function fetchRemoteTestimonial() {
-      try {
-        const res = await ghFetch('src/content/testimonial');
-        if (!res.ok) return;
-        const files = await res.json();
-        testimonialItems = [];
-        for (const f of files.filter(x => x.name.endsWith('.md'))) {
-          const r2 = await ghFetch(`src/content/testimonial/${f.name}`);
-          if (!r2.ok) continue;
-          const data = await r2.json();
-          const raw = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
-          const { meta } = parseMarkdown(raw);
-          testimonialItems.push({ slug: f.name.replace('.md', ''), sha: data.sha, meta });
-        }
-        renderTestimonialCards();
-      } catch (e) {}
-    }
-
-    function renderTestimonialCards() {
-      const container = document.getElementById('testimonial-list');
-      if (!container) return;
-      if (testimonialItems.length === 0) {
-        container.innerHTML = '<div class="col-span-full py-10 text-center text-slate-400 font-bold">Belum ada testimonial.</div>';
-        return;
-      }
-      testimonialItems.sort((a, b) => (a.meta.order || 0) - (b.meta.order || 0));
-      container.innerHTML = testimonialItems.map(item => `
-        <div class="rounded-2xl bg-white border-2 border-slate-200 p-5 shadow-sm hover:border-emerald-500 transition cursor-pointer" onclick="startEditTestimonial('${escapeHtml(item.slug)}')">
-          <div class="flex text-amber-400 text-sm mb-2">${'★'.repeat(item.meta.rating || 5)}</div>
-          <p class="text-sm text-slate-600 italic line-clamp-3">"${escapeHtml(item.meta.text || '')}"</p>
-          <div class="mt-3 pt-3 border-t border-slate-100">
-            <span class="text-2xl">${item.meta.avatar || '⭐'}</span>
-            <p class="font-bold text-slate-800 text-sm mt-1">${escapeHtml(item.meta.name || '')}</p>
-            <p class="text-xs text-slate-500">${escapeHtml(item.meta.role || '')}</p>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    async function startEditTestimonial(slug) {
-      const box = document.getElementById('testimonial-editor-box');
-      box.classList.remove('hidden');
-      box.scrollIntoView({ behavior: 'smooth' });
-      const btnDel = document.getElementById('btn-tst-delete');
-
-      if (slug === 'new') {
-        document.getElementById('testimonial-form-title').textContent = 'Tambah Testimonial';
-        document.getElementById('tst-slug').value = '';
-        document.getElementById('tst-sha').value = '';
-        document.getElementById('tst-name').value = '';
-        document.getElementById('tst-role').value = '';
-        document.getElementById('tst-text').value = '';
-        document.getElementById('tst-avatar').value = '⭐';
-        document.getElementById('tst-rating').value = 5;
-        document.getElementById('tst-order').value = testimonialItems.length + 1;
-        btnDel.classList.add('hidden');
-        return;
-      }
-
-      document.getElementById('testimonial-form-title').textContent = `Ubah Testimonial: ${slug}`;
-      document.getElementById('tst-slug').value = slug;
-      document.getElementById('tst-sha').value = '';
-      btnDel.classList.remove('hidden');
-
-      const cached = testimonialItems.find(x => x.slug === slug);
-      if (cached) {
-        document.getElementById('tst-name').value = cached.meta.name || '';
-        document.getElementById('tst-role').value = cached.meta.role || '';
-        document.getElementById('tst-text').value = cached.meta.text || '';
-        document.getElementById('tst-avatar').value = cached.meta.avatar || '⭐';
-        document.getElementById('tst-rating').value = cached.meta.rating || 5;
-        document.getElementById('tst-order').value = cached.meta.order || 1;
-        document.getElementById('tst-sha').value = cached.sha || '';
-      }
-      if (currentToken) {
-        try {
-          const res = await ghFetch(`src/content/testimonial/${slug}.md`);
-          if (res.ok) {
-            const data = await res.json();
-            const { meta } = parseMarkdown(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
-            document.getElementById('tst-name').value = meta.name || '';
-            document.getElementById('tst-role').value = meta.role || '';
-            document.getElementById('tst-text').value = meta.text || '';
-            document.getElementById('tst-avatar').value = meta.avatar || '⭐';
-            document.getElementById('tst-rating').value = meta.rating || 5;
-            document.getElementById('tst-order').value = meta.order || 1;
-            document.getElementById('tst-sha').value = data.sha;
-          }
-        } catch (e) { showAlert('Gagal memuat testimonial: ' + e.message, false); }
-      }
-    }
-
-    function closeTestimonialEditor() {
-      document.getElementById('testimonial-editor-box').classList.add('hidden');
-    }
-
-    async function saveTestimonial() {
-      let slug = document.getElementById('tst-slug').value.trim();
-      const name = document.getElementById('tst-name').value.trim();
-      const role = document.getElementById('tst-role').value.trim();
-      const text = document.getElementById('tst-text').value.trim();
-      const avatar = document.getElementById('tst-avatar').value.trim() || '⭐';
-      const rating = parseInt(document.getElementById('tst-rating').value || '5', 10);
-      const order = parseInt(document.getElementById('tst-order').value || '1', 10);
-      const sha = document.getElementById('tst-sha').value;
-
-      if (!name) { showAlert('Nama tidak boleh kosong.', false); return; }
-      if (!text) { showAlert('Teks testimonial tidak boleh kosong.', false); return; }
-      if (!slug) slug = slugify(name);
-
-      const meta = { name, role, text, avatar, rating, order };
-      const md = buildMarkdown(meta, '');
-
-      try {
-        await ghSave(`src/content/testimonial/${slug}.md`, md, `Update testimonial: ${name}`, sha || undefined);
-        showAlert('Testimonial berhasil disimpan.', true);
-        closeTestimonialEditor();
-        await fetchRemoteTestimonial();
-      } catch (e) {
-        showAlert(e.message, false);
-      }
-    }
-
-    function confirmDeleteTestimonial() {
-      const slug = document.getElementById('tst-slug').value;
-      if (!slug || slug === 'new') return;
-      if (!confirm('Hapus testimonial ini?')) return;
-      deleteTestimonial(slug);
-    }
-
-    async function deleteTestimonial(slug) {
-      const sha = document.getElementById('tst-sha').value;
-      try {
-        await ghDelete(`src/content/testimonial/${slug}.md`, `Hapus testimonial: ${slug}`, sha);
-        showAlert('Testimonial berhasil dihapus.', true);
-        closeTestimonialEditor();
-        await fetchRemoteTestimonial();
-      } catch (e) {
-        showAlert(e.message, false);
-      }
-    }
-
     // ============================================================
     // 11. APLIKASI LAYANAN FUNCTIONS (CRUD)
     // ============================================================

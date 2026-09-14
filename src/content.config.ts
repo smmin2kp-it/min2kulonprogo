@@ -80,17 +80,6 @@ const guruStaf = defineCollection({
   }),
 })
 
-const testimonial = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/testimonial' }),
-  schema: z.object({
-    name: z.string(),
-    role: z.string().optional().default(''),
-    text: z.string(),
-    avatar: z.string().optional().default('⭐'),
-    rating: z.number().optional().default(5),
-    order: z.number().optional().default(0),
-  }),
-})
 
 const profilSingkat = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/profil-singkat' }),
@@ -151,4 +140,4 @@ const carousel = defineCollection({
   }),
 })
 
-export const collections = { carousel, berita, galeri, halaman, faq, kurikulum, keunggulan, statistik, guruStaf, testimonial, aplikasiLayanan, profilSingkat }
+export const collections = { carousel, berita, galeri, halaman, faq, kurikulum, keunggulan, statistik, guruStaf, aplikasiLayanan, profilSingkat }
