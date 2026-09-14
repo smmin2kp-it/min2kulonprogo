@@ -23,3 +23,15 @@ Thumbs.db
 
 session-export-*/
 test-results/
+
+# Private files
+*.pdf
+ktp.jpeg
+logo.jpeg
+surat_domain.py
+rab_generator.py
+RENCANA-WEB-MIN2.md
+scripts/
+*.docx
+__pycache__/
+*.pyc
