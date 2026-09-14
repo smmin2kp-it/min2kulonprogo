@@ -24,10 +24,10 @@ const stats = (await getCollection('statistik'))
           <!-- Background Image with High-Quality Overlay -->
           <div class="absolute inset-0 z-0">
             <img
-              src={image || '/images/qngqw.jpg'}
+              src={image || '/images/galeri/banner-1.jpg'}
               alt={title}
               class="size-full object-cover object-center transform scale-100 transition duration-1000"
-              onerror="this.src='/images/galeri/banner-1.jpg'"
+              onerror="this.onerror=null;this.src='/images/galeri/banner-1.jpg'"
             />
             <!-- Gradient Overlay: Gelap di kiri agar teks sangat terbaca, gambar tetap tampak jelas di kanan -->
             <div class="absolute inset-0 bg-gradient-to-r from-dark-blue/95 via-dark-blue/85 to-dark-blue/60 z-10"></div>

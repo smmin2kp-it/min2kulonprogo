@@ -68,7 +68,7 @@ const badges = [
               src={d.foto || '/images/galeri/banner-1.jpg'}
               alt={`Gedung & Kegiatan Siswa ${d.judul || 'MIN 2 Kulon Progo'}`}
               class="size-full object-cover transition duration-700 hover:scale-105"
-              onerror="this.src='/images/galeri/banner-2.jpg'"
+              onerror="this.onerror=null;this.src='/images/galeri/banner-2.jpg'"
             />
             <div class="absolute inset-0 bg-gradient-to-t from-dark-blue/90 via-dark-blue/20 to-transparent"></div>
 
