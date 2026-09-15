@@ -3,7 +3,7 @@ title: "Juara 1 Lomba Tahfidz Quran Tingkat Kabupaten"
 tahun: 2026
 nama: "Ahmad Fauzi"
 kelas: "6A"
-foto: ""
+foto: "prestasi-1789478570352-1002241454.jpg"
 kategori: "Keagamaan"
 peringkat: "Juara 1"
 tingkat: "Kabupaten"
