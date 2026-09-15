@@ -1046,6 +1046,31 @@
               <input type="text" id="prs-title" required placeholder="Contoh: Juara 1 Lomba Tahfidz Quran" class="w-full rounded-2xl border-2 border-slate-300 px-4 py-3.5 text-base font-bold bg-white">
             </div>
 
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Nama Anak</label>
+                <input type="text" id="prs-nama" placeholder="Contoh: Ahmad Fauzi" class="w-full rounded-xl border-2 border-slate-300 px-4 py-3 text-sm font-semibold bg-white">
+              </div>
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Kelas</label>
+                <input type="text" id="prs-kelas" placeholder="Contoh: 6A" class="w-full rounded-xl border-2 border-slate-300 px-4 py-3 text-sm font-semibold bg-white">
+              </div>
+              <div>
+                <label class="block text-sm font-extrabold text-slate-800 mb-1">Foto Anak</label>
+                <div class="flex items-center gap-3">
+                  <img id="prs-foto-preview" class="size-16 rounded-xl object-cover border-2 border-slate-200 hidden" alt="Preview">
+                  <div class="flex-1">
+                    <label class="block rounded-xl bg-amber-700 hover:bg-amber-800 text-white text-center px-3 py-2 text-xs font-bold cursor-pointer">
+                      Unggah Foto
+                      <input type="file" accept="image/*" class="hidden" onchange="uploadPrestasiFoto(event)">
+                    </label>
+                    <p id="prs-foto-status" class="mt-1 text-[11px] font-semibold text-slate-500">Belum ada foto</p>
+                  </div>
+                </div>
+                <input type="hidden" id="prs-foto" value="">
+              </div>
+            </div>
+
             <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
               <div>
                 <label class="block text-sm font-extrabold text-slate-800 mb-1">Tahun <span class="text-red-500">*</span></label>
@@ -3407,7 +3432,13 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-2">
             ${byTahun[tahun].sort((a,b) => (a.meta.order||0) - (b.meta.order||0)).map(item => `
               <div class="rounded-2xl border-2 border-slate-200 bg-white p-4 shadow-sm hover:border-amber-500 transition cursor-pointer" onclick="startEditPrestasi('${escapeHtml(item.slug)}')">
-                <h4 class="font-bold text-slate-800 text-sm">${escapeHtml(item.meta.title || '')}</h4>
+                <div class="flex items-start gap-3 mb-2">
+                  ${item.meta.foto ? `<img src="/images/prestasi/${escapeHtml(item.meta.foto)}" class="size-12 rounded-xl object-cover shrink-0 border border-slate-200" onerror="this.onerror=null;this.style.display='none'">` : `<span class="flex size-12 items-center justify-center rounded-xl bg-amber-100 text-amber-700 text-xl shrink-0">🏆</span>`}
+                  <div class="min-w-0">
+                    <h4 class="font-bold text-slate-800 text-sm">${escapeHtml(item.meta.title || '')}</h4>
+                    ${item.meta.nama ? `<p class="text-[11px] font-semibold text-slate-500 mt-0.5">${escapeHtml(item.meta.nama)}${item.meta.kelas ? ' — Kelas ' + escapeHtml(item.meta.kelas) : ''}</p>` : ''}
+                  </div>
+                </div>
                 <div class="mt-2 flex flex-wrap gap-1.5">
                   ${item.meta.peringkat ? `<span class="rounded-lg bg-emerald-100 px-2 py-0.5 text-[11px] font-bold text-emerald-800">${escapeHtml(item.meta.peringkat)}</span>` : ''}
                   ${item.meta.tingkat ? `<span class="rounded-lg bg-blue-100 px-2 py-0.5 text-[11px] font-bold text-blue-800">${escapeHtml(item.meta.tingkat)}</span>` : ''}
@@ -3431,6 +3462,11 @@
         document.getElementById('prs-slug').value = '';
         document.getElementById('prs-sha').value = '';
         document.getElementById('prs-title').value = '';
+        document.getElementById('prs-nama').value = '';
+        document.getElementById('prs-kelas').value = '';
+        document.getElementById('prs-foto').value = '';
+        document.getElementById('prs-foto-preview').classList.add('hidden');
+        document.getElementById('prs-foto-status').textContent = 'Belum ada foto';
         document.getElementById('prs-tahun').value = new Date().getFullYear();
         document.getElementById('prs-kategori').value = '';
         document.getElementById('prs-peringkat').value = '';
@@ -3448,6 +3484,19 @@
       const cached = prestasiItems.find(x => x.slug === slug);
       if (cached) {
         document.getElementById('prs-title').value = cached.meta.title || '';
+        document.getElementById('prs-nama').value = cached.meta.nama || '';
+        document.getElementById('prs-kelas').value = cached.meta.kelas || '';
+        document.getElementById('prs-foto').value = cached.meta.foto || '';
+        const fPrev = document.getElementById('prs-foto-preview');
+        const fStat = document.getElementById('prs-foto-status');
+        if (cached.meta.foto) {
+          fPrev.src = `/images/prestasi/${cached.meta.foto}`;
+          fPrev.classList.remove('hidden');
+          fStat.textContent = cached.meta.foto;
+        } else {
+          fPrev.classList.add('hidden');
+          fStat.textContent = 'Belum ada foto';
+        }
         document.getElementById('prs-tahun').value = cached.meta.tahun || 2026;
         document.getElementById('prs-kategori').value = cached.meta.kategori || '';
         document.getElementById('prs-peringkat').value = cached.meta.peringkat || '';
@@ -3465,6 +3514,9 @@
     async function savePrestasi() {
       let slug = document.getElementById('prs-slug').value.trim();
       const title = document.getElementById('prs-title').value.trim();
+      const nama = document.getElementById('prs-nama').value.trim();
+      const kelas = document.getElementById('prs-kelas').value.trim();
+      const foto = document.getElementById('prs-foto').value.trim();
       const tahun = parseInt(document.getElementById('prs-tahun').value || '2026', 10);
       const kategori = document.getElementById('prs-kategori').value.trim();
       const peringkat = document.getElementById('prs-peringkat').value.trim();
@@ -3475,7 +3527,7 @@
       if (!title) { showAlert('Nama prestasi tidak boleh kosong.', false); return; }
       if (!slug) slug = slugify(title);
 
-      const meta = { title, tahun, kategori, peringkat, tingkat, order };
+      const meta = { title, tahun, nama, kelas, foto, kategori, peringkat, tingkat, order };
       const md = buildMarkdown(meta, body);
 
       try {
@@ -3504,6 +3556,32 @@
       } catch (e) {
         showAlert(e.message, false);
       }
+    }
+
+    async function uploadPrestasiFoto(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const statusEl = document.getElementById('prs-foto-status');
+      statusEl.textContent = 'Mengunggah foto...';
+      try {
+        const base64 = await fileToBase64(file);
+        const fileName = `prestasi-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+        const res = await ghFetch(`public/images/prestasi/${fileName}`, {
+          method: 'PUT',
+          body: JSON.stringify({ message: `Upload foto prestasi: ${fileName}`, content: base64 })
+        });
+        if (!res.ok) throw new Error('Gagal mengunggah foto.');
+        document.getElementById('prs-foto').value = fileName;
+        const preview = document.getElementById('prs-foto-preview');
+        preview.src = `/images/prestasi/${fileName}`;
+        preview.classList.remove('hidden');
+        statusEl.textContent = fileName;
+        showAlert('Foto berhasil diunggah.', true);
+      } catch (e) {
+        statusEl.textContent = 'Gagal mengunggah foto.';
+        showAlert(e.message, false);
+      }
+      event.target.value = '';
     }
 
     // Jalankan Saat Halaman Terbuka

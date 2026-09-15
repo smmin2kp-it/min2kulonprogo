@@ -145,6 +145,9 @@ const prestasi = defineCollection({
   schema: z.object({
     title: z.string(),
     tahun: z.number(),
+    nama: z.string().optional().default(''),
+    kelas: z.string().optional().default(''),
+    foto: z.string().optional().default(''),
     kategori: z.string().optional().default('Umum'),
     peringkat: z.string().optional().default(''),
     tingkat: z.string().optional().default(''),
