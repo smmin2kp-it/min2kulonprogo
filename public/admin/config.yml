@@ -29,7 +29,7 @@ collections:
       - { label: "Judul Slide", name: "title", widget: "string" }
       - { label: "Sub-Judul", name: "subtitle", widget: "string", required: false }
       - { label: "Badge / Label Atas", name: "badge", widget: "string", required: false }
-      - { label: "Foto Banner", name: "image", widget: "image", default: "/images/qngqw.jpg" }
+      - { label: "Foto Banner", name: "image", widget: "image", default: "/images/galeri/banner-1.jpg" }
       - { label: "Penjelasan Singkat", name: "description", widget: "text" }
       - { label: "Tombol Utama - Teks", name: "buttonPrimaryText", widget: "string", required: false }
       - { label: "Tombol Utama - Link", name: "buttonPrimaryLink", widget: "string", required: false }
