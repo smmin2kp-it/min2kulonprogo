@@ -156,6 +156,9 @@
         <button onclick="switchTab('profil-singkat')" id="tab-profil-singkat" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
           <span>Profil Singkat</span>
         </button>
+        <button onclick="switchTab('medsos')" id="tab-medsos" class="tab-btn p-4 rounded-2xl border-2 font-extrabold text-sm sm:text-base flex flex-col items-center justify-center gap-2 transition cursor-pointer text-center">
+          <span>Medsos</span>
+        </button>
       </div>
     </div>
 
@@ -1176,6 +1179,57 @@
       </div>
     </div>
 
+    <!-- ========== VIEW MEDSOS ========== -->
+    <div id="view-medsos" class="tab-view hidden container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
+      <div class="bg-white rounded-3xl shadow-lg border border-slate-200 p-6 sm:p-10">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <div>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-pink-100 text-pink-900 px-3 py-1 text-xs font-black uppercase">Medsos</span>
+            <h2 class="text-2xl font-extrabold text-dark-blue mt-1">📱 Kelola Media Sosial</h2>
+            <p class="text-slate-500 text-sm mt-0.5">Tampil sebagai ikon di footer situs.</p>
+          </div>
+          <button onclick="startEditMedsos('new')" class="rounded-2xl bg-pink-600 hover:bg-pink-700 text-white font-extrabold text-base px-6 py-3.5 shadow-lg flex items-center gap-2 transition hover:scale-105 cursor-pointer">
+            <span>Tambah Medsos</span>
+          </button>
+        </div>
+
+        <div id="medsos-editor-box" class="hidden mb-8 p-6 bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl">
+          <h3 id="medsos-form-title" class="text-lg font-extrabold text-slate-800 mb-4">Tambah Medsos</h3>
+          <input type="hidden" id="mds-slug" />
+          <input type="hidden" id="mds-sha" />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">Nama <span class="text-red-500">*</span></label>
+              <input id="mds-nama" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-pink-500 outline-none" placeholder="Instagram" />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">URL <span class="text-red-500">*</span></label>
+              <input id="mds-url" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-pink-500 outline-none" placeholder="https://instagram.com/min2kulonprogo" />
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">Ikon (key)</label>
+              <input id="mds-icon" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-pink-500 outline-none" placeholder="instagram / facebook / youtube / tiktok / twitter_x" />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-600 mb-1">Urutan</label>
+              <input id="mds-order" type="number" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-pink-500 outline-none" value="1" />
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <button onclick="saveMedsos()" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-6 rounded-xl transition cursor-pointer">Simpan</button>
+            <button onclick="closeMedsosEditor()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-6 rounded-xl transition cursor-pointer">Batal</button>
+            <button id="btn-mds-delete" onclick="confirmDeleteMedsos()" class="hidden ml-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-xl transition cursor-pointer">Hapus</button>
+          </div>
+        </div>
+
+        <div id="medsos-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Diisi lewat JS -->
+        </div>
+      </div>
+    </div>
+
     <!-- ========== VIEW PROFIL SINGKAT ========== -->
     <div id="view-profil-singkat" class="tab-view hidden container mx-auto max-w-6xl px-4 sm:px-6 mt-6">
       <div class="bg-white rounded-3xl shadow-lg border border-slate-200 p-6 sm:p-10">
@@ -1356,6 +1410,7 @@
     let guruItems = [];
     let guruFotoList = [];
     let aplikasiItems = [];
+    let medsosItems = [];
     let prestasiItems = [];
 
     // --- TAB SWITCHER ---
@@ -1530,6 +1585,7 @@
       fetchRemoteStatistik();
       fetchRemoteGuru();
       fetchRemoteAplikasi();
+      fetchRemoteMedsos();
       fetchRemotePrestasi();
       loadProfilSingkat();
     }
@@ -3371,6 +3427,123 @@
         showAlert('Aplikasi berhasil dihapus.', true);
         closeAplikasiEditor();
         await fetchRemoteAplikasi();
+      } catch (e) {
+        showAlert(e.message, false);
+      }
+    }
+
+    // ============================================================
+    // MEDSOS FUNCTIONS (CRUD)
+    // ============================================================
+    async function fetchRemoteMedsos() {
+      try {
+        const res = await ghFetch('src/content/medsos');
+        if (!res.ok) return;
+        const files = await res.json();
+        medsosItems = [];
+        for (const f of files.filter(x => x.name.endsWith('.md'))) {
+          const r2 = await ghFetch(`src/content/medsos/${f.name}`);
+          if (!r2.ok) continue;
+          const data = await r2.json();
+          const raw = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+          const { meta } = parseMarkdown(raw);
+          medsosItems.push({ slug: f.name.replace('.md', ''), sha: data.sha, meta });
+        }
+        renderMedsosCards();
+      } catch (e) {}
+    }
+
+    function renderMedsosCards() {
+      const container = document.getElementById('medsos-list');
+      if (!container) return;
+      if (medsosItems.length === 0) {
+        container.innerHTML = '<div class="col-span-full py-10 text-center text-slate-400 font-bold">Belum ada media sosial. Klik Tambah Medsos di atas.</div>';
+        return;
+      }
+      medsosItems.sort((a, b) => (a.meta.order || 0) - (b.meta.order || 0));
+      container.innerHTML = medsosItems.map(item => `
+        <div class="rounded-2xl bg-white border-2 border-slate-200 p-5 shadow-sm hover:border-pink-500 transition cursor-pointer" onclick="startEditMedsos('${escapeHtml(item.slug)}')">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="flex size-11 items-center justify-center rounded-2xl bg-pink-100 text-xl">${escapeHtml(item.meta.icon || '🔗')}</span>
+            <div class="min-w-0">
+              <h4 class="font-bold text-slate-800 text-sm">${escapeHtml(item.meta.nama || '')}</h4>
+              <p class="text-[11px] text-slate-500 truncate mt-0.5">${escapeHtml(item.meta.url || '')}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 mt-3">
+            <button onclick="event.stopPropagation();startEditMedsos('${escapeHtml(item.slug)}')" class="flex-1 rounded-xl bg-pink-600 hover:bg-pink-700 text-white text-sm font-bold py-2.5 px-3 cursor-pointer">Ubah</button>
+            <button onclick="event.stopPropagation();confirmDeleteMedsos('${escapeHtml(item.slug)}')" class="rounded-xl bg-red-100 hover:bg-red-200 text-red-700 font-bold text-sm px-4 py-2.5 cursor-pointer">Hapus</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function startEditMedsos(slug) {
+      const box = document.getElementById('medsos-editor-box');
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+      const btnDel = document.getElementById('btn-mds-delete');
+      if (slug === 'new') {
+        document.getElementById('medsos-form-title').textContent = 'Tambah Medsos';
+        document.getElementById('mds-slug').value = '';
+        document.getElementById('mds-sha').value = '';
+        document.getElementById('mds-nama').value = '';
+        document.getElementById('mds-url').value = '';
+        document.getElementById('mds-icon').value = '';
+        document.getElementById('mds-order').value = medsosItems.length + 1;
+        btnDel.classList.add('hidden');
+        return;
+      }
+      document.getElementById('medsos-form-title').textContent = 'Ubah Medsos';
+      document.getElementById('mds-slug').value = slug;
+      btnDel.classList.remove('hidden');
+      const cached = medsosItems.find(x => x.slug === slug);
+      if (cached) {
+        document.getElementById('mds-nama').value = cached.meta.nama || '';
+        document.getElementById('mds-url').value = cached.meta.url || '';
+        document.getElementById('mds-icon').value = cached.meta.icon || '';
+        document.getElementById('mds-order').value = cached.meta.order || 1;
+        document.getElementById('mds-sha').value = cached.sha || '';
+      }
+    }
+
+    function closeMedsosEditor() {
+      document.getElementById('medsos-editor-box').classList.add('hidden');
+    }
+
+    async function saveMedsos() {
+      const slug = document.getElementById('mds-slug').value;
+      const nama = document.getElementById('mds-nama').value.trim();
+      const url = document.getElementById('mds-url').value.trim();
+      const icon = document.getElementById('mds-icon').value.trim();
+      const order = parseInt(document.getElementById('mds-order').value || '1', 10);
+      if (!nama || !url) { showAlert('Nama dan URL wajib diisi.', false); return; }
+      const md = buildMarkdown({ nama, url, icon, order }, '');
+      const newSlug = slug || slugify(nama);
+      try {
+        await ghSave(`src/content/medsos/${newSlug}.md`, md, `Update medsos: ${nama}`, document.getElementById('mds-sha').value || undefined);
+        showAlert('Medsos berhasil disimpan.', true);
+        closeMedsosEditor();
+        await fetchRemoteMedsos();
+      } catch (e) {
+        showAlert(e.message, false);
+      }
+    }
+
+    function confirmDeleteMedsos(slug) {
+      slug = slug || document.getElementById('mds-slug').value;
+      if (!slug || slug === 'new') return;
+      if (!confirm('Hapus medsos ini? Tindakan ini tidak bisa dibatalkan.')) return;
+      deleteMedsos(slug);
+    }
+
+    async function deleteMedsos(slug) {
+      const sha = document.getElementById('mds-sha').value;
+      try {
+        await ghDelete(`src/content/medsos/${slug}.md`, `Hapus medsos: ${slug}`, sha);
+        showAlert('Medsos berhasil dihapus.', true);
+        closeMedsosEditor();
+        await fetchRemoteMedsos();
       } catch (e) {
         showAlert(e.message, false);
       }

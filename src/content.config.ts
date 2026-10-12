@@ -140,6 +140,16 @@ const carousel = defineCollection({
   }),
 })
 
+const medsos = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/medsos' }),
+  schema: z.object({
+    nama: z.string(),
+    url: z.string(),
+    icon: z.string().optional().default('🔗'),
+    order: z.number().optional().default(0),
+  }),
+})
+
 const prestasi = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/prestasi' }),
   schema: z.object({
@@ -155,4 +165,4 @@ const prestasi = defineCollection({
   }),
 })
 
-export const collections = { carousel, berita, galeri, halaman, faq, kurikulum, keunggulan, statistik, guruStaf, aplikasiLayanan, profilSingkat, prestasi }
+export const collections = { carousel, berita, galeri, halaman, faq, kurikulum, keunggulan, statistik, guruStaf, aplikasiLayanan, profilSingkat, prestasi, medsos }
