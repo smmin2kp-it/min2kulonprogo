@@ -1,9 +1,10 @@
 ---
-name: "RDM Kemenag"
+name: "RDM MIN 2 KULON PROGO"
 fullName: "Rapor Digital Madrasah"
 desc: "Aplikasi penilaian dan pencatatan hasil belajar siswa berbasis digital."
 icon: "📊"
-url: "https://rdm.kemenag.go.id/"
+url: "https://rdm.rapormin2kp.com/"
 badge: "Akademik"
 order: 1
 ---
+
