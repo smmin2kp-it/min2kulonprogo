@@ -1199,8 +1199,8 @@
           <input type="hidden" id="mds-sha" />
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
-              <label class="block text-sm font-bold text-slate-600 mb-1">Nama <span class="text-red-500">*</span></label>
-              <input id="mds-nama" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-pink-500 outline-none" placeholder="Instagram" />
+              <label class="block text-sm font-bold text-slate-600 mb-1">Nama Medsos (auto)</label>
+              <input id="mds-nama" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 bg-slate-100 outline-none" readonly />
             </div>
             <div>
               <label class="block text-sm font-bold text-slate-600 mb-1">URL <span class="text-red-500">*</span></label>
@@ -1209,8 +1209,16 @@
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
-              <label class="block text-sm font-bold text-slate-600 mb-1">Ikon (key)</label>
-              <input id="mds-icon" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-pink-500 outline-none" placeholder="instagram / facebook / youtube / tiktok / twitter_x" />
+              <label class="block text-sm font-bold text-slate-600 mb-1">Platform <span class="text-red-500">*</span></label>
+              <select id="mds-icon" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2 focus:border-pink-500 outline-none bg-white" onchange="autoFillMedsosNama()">
+                <option value="instagram">Instagram</option>
+                <option value="facebook">Facebook</option>
+                <option value="youtube">YouTube</option>
+                <option value="tiktok">TikTok</option>
+                <option value="twitter_x">X (Twitter)</option>
+                <option value="whatsapp">WhatsApp</option>
+                <option value="telegram">Telegram</option>
+              </select>
             </div>
             <div>
               <label class="block text-sm font-bold text-slate-600 mb-1">Urutan</label>
@@ -1412,6 +1420,26 @@
     let aplikasiItems = [];
     let medsosItems = [];
     let prestasiItems = [];
+
+    const MEDSOS_PLATFORM = {
+      instagram: 'Instagram',
+      facebook: 'Facebook',
+      youtube: 'YouTube',
+      tiktok: 'TikTok',
+      twitter_x: 'X (Twitter)',
+      whatsapp: 'WhatsApp',
+      telegram: 'Telegram'
+    };
+
+    function autoFillMedsosNama() {
+      const sel = document.getElementById('mds-icon');
+      if (!sel) return;
+      const nama = MEDSOS_PLATFORM[sel.value];
+      const namaInput = document.getElementById('mds-nama');
+      if (nama && (!namaInput.value || MEDSOS_PLATFORM[namaInput.value] === undefined)) {
+        namaInput.value = nama;
+      }
+    }
 
     // --- TAB SWITCHER ---
     function switchTab(tabName) {
@@ -3464,7 +3492,7 @@
       container.innerHTML = medsosItems.map(item => `
         <div class="rounded-2xl bg-white border-2 border-slate-200 p-5 shadow-sm hover:border-pink-500 transition cursor-pointer" onclick="startEditMedsos('${escapeHtml(item.slug)}')">
           <div class="flex items-center gap-3 mb-3">
-            <span class="flex size-11 items-center justify-center rounded-2xl bg-pink-100 text-xl">${escapeHtml(item.meta.icon || '🔗')}</span>
+            <span class="flex size-11 items-center justify-center rounded-2xl bg-pink-100 text-pink-700 font-black capitalize text-sm">${escapeHtml(MEDSOS_PLATFORM[item.meta.icon] || item.meta.nama || '?')}</span>
             <div class="min-w-0">
               <h4 class="font-bold text-slate-800 text-sm">${escapeHtml(item.meta.nama || '')}</h4>
               <p class="text-[11px] text-slate-500 truncate mt-0.5">${escapeHtml(item.meta.url || '')}</p>
@@ -3501,10 +3529,9 @@
       if (cached) {
         document.getElementById('mds-nama').value = cached.meta.nama || '';
         document.getElementById('mds-url').value = cached.meta.url || '';
-        document.getElementById('mds-icon').value = cached.meta.icon || '';
+        document.getElementById('mds-icon').value = MEDSOS_PLATFORM[cached.meta.icon] ? cached.meta.icon : 'instagram';
         document.getElementById('mds-order').value = cached.meta.order || 1;
         document.getElementById('mds-sha').value = cached.sha || '';
-      }
     }
 
     function closeMedsosEditor() {
