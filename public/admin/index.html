@@ -3515,9 +3515,9 @@
         document.getElementById('medsos-form-title').textContent = 'Tambah Medsos';
         document.getElementById('mds-slug').value = '';
         document.getElementById('mds-sha').value = '';
-        document.getElementById('mds-nama').value = '';
+        document.getElementById('mds-icon').value = 'instagram';
+        autoFillMedsosNama();
         document.getElementById('mds-url').value = '';
-        document.getElementById('mds-icon').value = '';
         document.getElementById('mds-order').value = medsosItems.length + 1;
         btnDel.classList.add('hidden');
         return;
@@ -3532,6 +3532,7 @@
         document.getElementById('mds-icon').value = MEDSOS_PLATFORM[cached.meta.icon] ? cached.meta.icon : 'instagram';
         document.getElementById('mds-order').value = cached.meta.order || 1;
         document.getElementById('mds-sha').value = cached.sha || '';
+      }
     }
 
     function closeMedsosEditor() {
